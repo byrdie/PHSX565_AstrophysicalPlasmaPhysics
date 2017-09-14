@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     10906,        373]
-NotebookOptionsPosition[      8891,        294]
-NotebookOutlinePosition[      9227,        309]
-CellTagsIndexPosition[      9184,        306]
+NotebookDataLength[     48031,       1505]
+NotebookOptionsPosition[     40986,       1249]
+NotebookOutlinePosition[     41348,       1265]
+CellTagsIndexPosition[     41305,       1262]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -47,9 +47,142 @@ Cell[CellGroupData[{
 Cell["Declare Assumptions", "Subsubsection",
  CellChangeTimes->{{3.714265417347416*^9, 3.714265422494422*^9}}],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
- RowBox[{"$Assumptions", " ", "=", " "}]], "Input",
- CellChangeTimes->{{3.714265425437289*^9, 3.714265430138419*^9}}]
+ RowBox[{"$Assumptions", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"cs", " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{"g", " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{"ztp", " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{"\[Sigma]ir", " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{"m", " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{
+    RowBox[{"\[Rho]", "[", "z", "]"}], " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{
+    RowBox[{"p", "[", "z", "]"}], " ", ">", " ", "0"}], " ", "&&", " ", 
+   RowBox[{"\[CapitalGamma]", " ", ">", " ", "0"}]}]}]], "Input",
+ CellChangeTimes->{{3.714265425437289*^9, 3.714265430138419*^9}, {
+  3.714338909924642*^9, 3.714338915136698*^9}, {3.714345006349491*^9, 
+  3.714345009842401*^9}, {3.714345411343638*^9, 3.7143454569891*^9}, {
+  3.714359961563953*^9, 3.714359968049713*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cs", ">", "0"}], "&&", 
+  RowBox[{"g", ">", "0"}], "&&", 
+  RowBox[{"ztp", ">", "0"}], "&&", 
+  RowBox[{"\[Sigma]ir", ">", "0"}], "&&", 
+  RowBox[{"m", ">", "0"}], "&&", 
+  RowBox[{
+   RowBox[{"\[Rho]", "[", "z", "]"}], ">", "0"}], "&&", 
+  RowBox[{
+   RowBox[{"p", "[", "z", "]"}], ">", "0"}], "&&", 
+  RowBox[{"\[CapitalGamma]", ">", "0"}]}]], "Output",
+ CellChangeTimes->{
+  3.714338918539474*^9, {3.714339269486101*^9, 3.714339292228201*^9}, 
+   3.714339472404005*^9, 3.714341702396068*^9, {3.714345416777521*^9, 
+   3.7143454290203543`*^9}, 3.714345459462916*^9, 3.714350170217757*^9, 
+   3.714350474519648*^9, 3.714352103701612*^9, {3.714352940434668*^9, 
+   3.714352967338573*^9}, 3.714359231627858*^9, 3.714359536763813*^9, 
+   3.714359972853998*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Provide numerical values for constants", "Subsubsection",
+ CellChangeTimes->{{3.714349653609832*^9, 3.714349662261554*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"vals", " ", "=", " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"kB", "\[Rule]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"UnitConvert", "[", 
+        RowBox[{"Quantity", "[", "\"\<Boltzmann Constant\>\"", "]"}], "]"}], "/.", 
+       RowBox[{"\"\<Kelvins\>\"", "\[Rule]", "\"\<KelvinsDifference\>\""}]}], 
+      ")"}]}], ",", 
+    RowBox[{"g", "\[Rule]", " ", 
+     TemplateBox[{
+      "1",StyleBox["\"g\"", Italic, StripOnInput -> False],
+       "standard accelerations due to gravity on the surface of the earth",
+       "\"StandardAccelerationOfGravity\""},
+      "Quantity"]}], ",", 
+    RowBox[{"\[Sigma]SB", "\[Rule]", " ", 
+     TemplateBox[{
+      InterpretationBox["\[InvisibleSpace]", 1],"\"\[Sigma]\"",
+       "Stefan\[Hyphen]Boltzmann constants","\"StefanBoltzmannConstant\""},
+      "Quantity"]}], ",", 
+    RowBox[{"m", "\[Rule]", " ", 
+     RowBox[{
+      TemplateBox[{"\"dry air\"",RowBox[{"Entity", "[", 
+          RowBox[{"\"Chemical\"", ",", "\"DryAir\""}], "]"}],
+        "\"Entity[\\\"Chemical\\\", \\\"DryAir\\\"]\"","\"chemical\""},
+       "Entity"], "[", 
+      TemplateBox[{"\"molecular mass\"",RowBox[{"EntityProperty", "[", 
+          RowBox[{"\"Chemical\"", ",", "\"MolecularMass\""}], "]"}],
+        "\"EntityProperty[\\\"Chemical\\\", \\\"MolecularMass\\\"]\""},
+       "EntityProperty"], "]"}]}], ",", " ", 
+    RowBox[{"Teff\[Earth]", "\[Rule]", " ", 
+     RowBox[{"240", 
+      TemplateBox[{
+       InterpretationBox["\[InvisibleSpace]", 1],"\"K\"","kelvins difference",
+        "\"KelvinsDifference\""},
+       "Quantity"]}]}], ",", 
+    RowBox[{"\[Alpha]\[Earth]", "\[Rule]", " ", "0.45"}]}], "}"}]}]], "Input",\
+
+ CellChangeTimes->{{3.71434967727079*^9, 3.714349721296751*^9}, {
+   3.714349807707375*^9, 3.714349820778068*^9}, {3.71434995489995*^9, 
+   3.714349978295972*^9}, {3.714350018273786*^9, 3.714350020518108*^9}, 
+   3.714350152492312*^9, 3.714350623968001*^9, {3.714351841071042*^9, 
+   3.7143519443208513`*^9}, {3.714352933901922*^9, 3.714352964605847*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"kB", "\[Rule]", 
+    TemplateBox[{
+     "1.38064852`5.941426044735842*^-23",RowBox[{"\"kg\"", "\[ThinSpace]", 
+        SuperscriptBox["\"m\"", "2"], "\[NegativeMediumSpace]", "\"/(\"", 
+        "\[InvisibleSpace]", 
+        SuperscriptBox["\"s\"", "2"], "\[InvisibleSpace]", "\"K\"", 
+        "\[InvisibleSpace]", "\")\""}],
+      "kilogram meters squared per second squared kelvin difference",
+      FractionBox[
+       RowBox[{"\"Kilograms\"", " ", 
+         SuperscriptBox["\"Meters\"", "2"]}], 
+       RowBox[{"\"KelvinsDifference\"", " ", 
+         SuperscriptBox["\"Seconds\"", "2"]}]]},
+     "Quantity"]}], ",", 
+   RowBox[{"g", "\[Rule]", 
+    TemplateBox[{
+     "1",StyleBox["\"g\"", Italic, StripOnInput -> False],
+      "standard accelerations due to gravity on the surface of the earth",
+      "\"StandardAccelerationOfGravity\""},
+     "Quantity"]}], ",", 
+   RowBox[{"\[Sigma]SB", "\[Rule]", 
+    TemplateBox[{
+     "1","\"\[Sigma]\"","Stefan\[Hyphen]Boltzmann constants",
+      "\"StefanBoltzmannConstant\""},
+     "Quantity"]}], ",", 
+   RowBox[{"m", "\[Rule]", 
+    TemplateBox[{
+     "28.96`","\"u\"","unified atomic mass units","\"AtomicMassUnit\""},
+     "Quantity"]}], ",", 
+   RowBox[{"Teff\[Earth]", "\[Rule]", 
+    TemplateBox[{"240","\"K\"","kelvins difference","\"KelvinsDifference\""},
+     "Quantity"]}], ",", 
+   RowBox[{"\[Alpha]\[Earth]", "\[Rule]", "0.45`"}]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.714350170558346*^9, 3.714350474628889*^9, 3.714350624249099*^9, 
+   3.714352103796212*^9, {3.714352935149151*^9, 3.714352968388616*^9}, 
+   3.7143592317592583`*^9, 3.7143595368838663`*^9, 3.714359972976841*^9}]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 
@@ -65,27 +198,18 @@ Cell[CellGroupData[{
 Cell["The energy flux heating the planetary surface is", "Subsubsection",
  CellChangeTimes->{{3.714258994003613*^9, 3.714259035217882*^9}}],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
- RowBox[{"F0I$", " ", "=", " ", 
-  RowBox[{"F0", " ", "\[Rule]", " ", 
-   RowBox[{
-    RowBox[{"(", 
-     RowBox[{"1", "-", "\[Alpha]"}], ")"}], "F\[EmptyCircle]"}]}]}]], "Input",\
-
+ RowBox[{
+  RowBox[{"F0I$", " ", "=", " ", 
+   RowBox[{"F0", " ", "\[Rule]", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "-", "\[Alpha]"}], ")"}], "F\[EmptyCircle]"}]}]}], 
+  ";"}]], "Input",
  CellChangeTimes->{{3.714258734565926*^9, 3.714258764098197*^9}, {
    3.7142588326484537`*^9, 3.714258842022238*^9}, {3.71425887297891*^9, 
    3.71425888916*^9}, 3.71425908797556*^9, {3.714259167749279*^9, 
-   3.714259169082033*^9}}],
-
-Cell[BoxData[
- RowBox[{"F0", "\[Rule]", 
-  RowBox[{"F\[EmptyCircle]", " ", 
-   RowBox[{"(", 
-    RowBox[{"1", "-", "\[Alpha]"}], ")"}]}]}]], "Output",
- CellChangeTimes->{3.7142653963637543`*^9}]
-}, Open  ]]
+   3.714259169082033*^9}, 3.7143419244072523`*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -93,22 +217,14 @@ Cell[CellGroupData[{
 Cell["The energy flux emitted by the planet is", "Subsubsection",
  CellChangeTimes->{{3.714259050715983*^9, 3.714259059963015*^9}}],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
- RowBox[{"F0E$", " ", "=", " ", 
-  RowBox[{"F0", " ", "\[Rule]", " ", 
-   RowBox[{"\[Sigma]SB", " ", 
-    SuperscriptBox["Teff", "4"]}]}]}]], "Input",
+ RowBox[{
+  RowBox[{"F0E$", " ", "=", " ", 
+   RowBox[{"F0", " ", "\[Rule]", " ", 
+    RowBox[{"\[Sigma]SB", " ", 
+     SuperscriptBox["Teff", "4"]}]}]}], ";"}]], "Input",
  CellChangeTimes->{{3.714259090534875*^9, 3.714259113853862*^9}, {
-  3.714259171603182*^9, 3.714259172836337*^9}}],
-
-Cell[BoxData[
- RowBox[{"F0", "\[Rule]", 
-  RowBox[{
-   SuperscriptBox["Teff", "4"], " ", "\[Sigma]SB"}]}]], "Output",
- CellChangeTimes->{3.7142653963796387`*^9}]
-}, Open  ]]
+   3.714259171603182*^9, 3.714259172836337*^9}, 3.714341930697212*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -116,21 +232,32 @@ Cell[CellGroupData[{
 Cell["The mean free path of an infared photon is", "Subsubsection",
  CellChangeTimes->{{3.714259180780074*^9, 3.714259188444068*^9}}],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
- RowBox[{"lmfp$", " ", "=", " ", 
+ RowBox[{
+  RowBox[{"lmfp$", "[", "z_", "]"}], " ", ":=", " ", 
   RowBox[{"lmfp", " ", "\[Rule]", " ", 
    FractionBox["m", 
-    RowBox[{"\[Rho]", " ", "\[Sigma]ir"}]]}]}]], "Input",
- CellChangeTimes->{{3.714259190283519*^9, 3.7142592432018642`*^9}}],
+    RowBox[{
+     RowBox[{"\[Rho]", "[", "z", "]"}], "\[Sigma]ir"}]]}]}]], "Input",
+ CellChangeTimes->{{3.714259190283519*^9, 3.7142592432018642`*^9}, {
+  3.714341656514193*^9, 3.7143416989159822`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The optically thick troposphere has a radiative conductivity given by \
+(Longcope 1.46)\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7143466453321953`*^9, 3.7143466932227287`*^9}}],
 
 Cell[BoxData[
- RowBox[{"lmfp", "\[Rule]", 
-  FractionBox["m", 
-   RowBox[{"\[Rho]", " ", "\[Sigma]ir"}]]}]], "Output",
- CellChangeTimes->{3.714265396395748*^9}]
-}, Open  ]]
+ RowBox[{
+  RowBox[{"\[Kappa]rad$", " ", "=", " ", 
+   RowBox[{"\[Kappa]rad", " ", "\[Rule]", " ", 
+    RowBox[{"8", " ", "\[Sigma]SB", " ", 
+     SuperscriptBox["T", "3"], " ", "lmfp"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.714346696842428*^9, 3.714346755985855*^9}}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -163,13 +290,73 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
+Cell["Useful definitions given in the notes", "Subsection",
+ CellChangeTimes->{{3.714350592916728*^9, 3.714350611060128*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Isothermal sound speed", "Subsubsection",
+ CellChangeTimes->{{3.714359063210825*^9, 3.714359066543969*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cs$", " ", "=", " ", 
+   RowBox[{"cs", " ", "\[Rule]", " ", 
+    SqrtBox[
+     RowBox[{"kB", " ", 
+      RowBox[{"T0", " ", "/", " ", "m"}]}]]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7143506146368113`*^9, 3.7143506553128843`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Ideal gas law", "Subsubsection",
+ CellChangeTimes->{{3.714359074657902*^9, 3.714359077064212*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"p$", "[", "z_", "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"p", "[", "z", "]"}], "\[Rule]", 
+    RowBox[{
+     FractionBox["kB", "m"], 
+     RowBox[{"\[Rho]", "[", "z", "]"}], " ", 
+     RowBox[{"T", "[", "z", "]"}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7143590798484488`*^9, 3.714359138107067*^9}, {
+  3.714359219769641*^9, 3.714359222462008*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Polytropic density relationship", "Subsubsection",
+ CellChangeTimes->{{3.7143597673787622`*^9, 3.714359779097*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Rho]$", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"\[Rho]", "[", "z", "]"}], "\[Rule]", " ", 
+    RowBox[{"K0", " ", 
+     SuperscriptBox[
+      RowBox[{"p", "[", "z", "]"}], 
+      RowBox[{"1", "/", "\[CapitalGamma]"}]]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.71435978218648*^9, 3.714359834115518*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
 Cell["Part a.", "Section",
  CellChangeTimes->{{3.7142595861201687`*^9, 3.714259587298078*^9}}],
 
 Cell[CellGroupData[{
 
-Cell["The optical depth one condition is given by", "Subsection",
- CellChangeTimes->{{3.7142597656450777`*^9, 3.714259774040331*^9}}],
+Cell["\<\
+The optical depth one condition is given in the problem statement as\
+\>", "Subsection",
+ CellChangeTimes->{{3.7142597656450777`*^9, 3.714259774040331*^9}, {
+  3.714341988581867*^9, 3.71434199195542*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -188,7 +375,8 @@ Cell[BoxData[
       RowBox[{"\[DifferentialD]", "z"}]}]}], " ", "\[Equal]", " ", "1"}]}], 
   ";"}]], "Input",
  CellChangeTimes->{{3.714259817603299*^9, 3.71425994636865*^9}, 
-   3.7142599862136097`*^9}]
+   3.7142599862136097`*^9, {3.714339224002763*^9, 3.7143392258464603`*^9}, 
+   3.714339283988068*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -200,15 +388,16 @@ Cell[CellGroupData[{
 
 Cell["\<\
 Since the stratosphere is isothermal, we can use the exponential hydrostatic \
-density, where the reference point is at the tropopause\
+density, where the reference point is at the tropopause (Longcope 2.13)\
 \>", "Subsubsection",
  CellChangeTimes->{{3.714260719085545*^9, 3.71426072976542*^9}, {
   3.7142608046870527`*^9, 3.714260824430085*^9}, {3.714264816343553*^9, 
-  3.7142648745790567`*^9}, {3.714265067185678*^9, 3.714265067596828*^9}}],
+  3.7142648745790567`*^9}, {3.714265067185678*^9, 3.714265067596828*^9}, {
+  3.714341883206558*^9, 3.714341914963745*^9}}],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"\[Rho]hs$a", " ", "=", " ", 
+  RowBox[{"\[Rho]hs$", " ", "=", " ", 
    RowBox[{
     RowBox[{
      RowBox[{"\[Rho]", "[", "z", "]"}], " ", "\[Rule]", " ", 
@@ -223,69 +412,835 @@ Cell[BoxData[
          SuperscriptBox["cs", "2"]}]}]]}]}], " ", "/.", " ", 
     RowBox[{"z0", "\[Rule]", " ", "ztp"}]}]}], ";"}]], "Input",
  CellChangeTimes->{{3.7142608356780977`*^9, 3.714260888550193*^9}, {
-  3.714264637725651*^9, 3.7142646531798563`*^9}, {3.714264713996378*^9, 
-  3.714264742816534*^9}, {3.71426479431107*^9, 3.7142648099737997`*^9}, {
-  3.714265124208582*^9, 3.7142651303483887`*^9}}]
+   3.714264637725651*^9, 3.7142646531798563`*^9}, {3.714264713996378*^9, 
+   3.714264742816534*^9}, {3.71426479431107*^9, 3.7142648099737997`*^9}, {
+   3.714265124208582*^9, 3.7142651303483887`*^9}, 3.714339062487822*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["and the linear relationship between density and pressure", \
-"Subsubsection",
+Cell["\<\
+and the linear relationship between density and pressure (Longcope 2.5)\
+\>", "Subsubsection",
  CellChangeTimes->{{3.714265151278277*^9, 3.714265170139298*^9}, {
-  3.714265241240869*^9, 3.7142652551400843`*^9}}],
+  3.714265241240869*^9, 3.7142652551400843`*^9}, {3.714341960292975*^9, 
+  3.714341979063344*^9}}],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"\[Rho]it$", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"\[Rho]it$", "[", "z_", "]"}], ":=", " ", 
    RowBox[{
     RowBox[{"\[Rho]", "[", "z", "]"}], " ", "\[Rule]", " ", 
     FractionBox[
      RowBox[{"p", "[", "z", "]"}], 
      SuperscriptBox["cs", "2"]]}]}], ";"}]], "Input",
  CellChangeTimes->{{3.7142651865301123`*^9, 3.7142652370311117`*^9}, {
-  3.714265373521235*^9, 3.714265377952071*^9}}]
+   3.714265373521235*^9, 3.714265377952071*^9}, 3.714339071318812*^9, {
+   3.714339116117029*^9, 3.7143391216997633`*^9}, {3.7143393437872553`*^9, 
+   3.714339345150297*^9}, {3.714339437919924*^9, 3.714339466699875*^9}, 
+   3.71433949873629*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell["\<\
-in the right-hand equality in the optical depth one condition\
+in the right-hand equality in the optical depth one condition and solve for \
+p[ztp]\
 \>", "Subsubsection",
  CellChangeTimes->{{3.714261185121821*^9, 3.7142612133300667`*^9}, {
   3.71426488151604*^9, 3.714264882854227*^9}, {3.714265260934153*^9, 
-  3.714265284235332*^9}}],
+  3.714265284235332*^9}, {3.714339093000533*^9, 3.7143390952963743`*^9}, {
+  3.714339491082849*^9, 3.7143394934886627`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"pztp$a", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"Solve", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"od1$a", "[", 
+           RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", " ", 
+          RowBox[{"od1$a", "[", 
+           RowBox[{"[", "3", "]"}], "]"}]}], "/.", " ", "\[Rho]hs$"}], "/.", 
+        RowBox[{"\[Rho]it$", "[", "ztp", "]"}]}], ",", " ", 
+       RowBox[{"p", "[", "ztp", "]"}]}], "]"}], "[", 
+     RowBox[{"[", 
+      RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ")"}], " ", "//", 
+  "Framed"}]], "Input",
+ CellChangeTimes->{{3.714260906154222*^9, 3.71426090863902*^9}, {
+  3.71426393627569*^9, 3.714263945658025*^9}, {3.71426437306306*^9, 
+  3.7142643915322943`*^9}, {3.7143390576606703`*^9, 3.714339083843513*^9}, {
+  3.714339137574119*^9, 3.714339141633985*^9}, {3.714339195699181*^9, 
+  3.714339216349926*^9}, {3.7143392548771772`*^9, 3.7143392882578917`*^9}, {
+  3.714339337326065*^9, 3.714339533430346*^9}, {3.714339571717767*^9, 
+  3.714339573607518*^9}, {3.7143405371464987`*^9, 3.714340541977022*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{
+   RowBox[{"p", "[", "ztp", "]"}], "\[Rule]", 
+   FractionBox[
+    RowBox[{"g", " ", "m"}], "\[Sigma]ir"]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.7142609032143106`*^9, 3.714260908882716*^9}, {
+   3.7142643763193207`*^9, 3.714264392486052*^9}, 3.714264656691182*^9, 
+   3.7142647594585743`*^9, {3.714265392715658*^9, 3.714265397716302*^9}, 
+   3.714338919346423*^9, {3.714339067124887*^9, 3.7143391039108*^9}, {
+   3.714339210405003*^9, 3.71433929284231*^9}, {3.714339377693326*^9, 
+   3.71433952493156*^9}, {3.714339567269824*^9, 3.714339574391245*^9}, 
+   3.7143406265786858`*^9, 3.714341703060863*^9, 3.714345429554743*^9, 
+   3.714345460216284*^9, 3.714350171150901*^9, 3.714350475143214*^9, 
+   3.714352104317831*^9, {3.7143529418984222`*^9, 3.714352969610935*^9}, 
+   3.714359232299934*^9, 3.714359537421069*^9, 3.7143599737606583`*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part b.", "Section",
+ CellChangeTimes->{{3.7143390403683043`*^9, 3.714339050578352*^9}, {
+  3.714340531852633*^9, 3.714340533828169*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Show that the photon mean free path matches the pressure scale height\
+\>", "Subsection",
+ CellChangeTimes->{{3.714340780082426*^9, 3.7143408185157413`*^9}, {
+  3.714341416032078*^9, 3.714341422307152*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Evaluate the photon mean free path using the definition and the answer from \
+Part a.\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714341626335121*^9, 3.714341633853953*^9}, {
+  3.714341789349609*^9, 3.714341822930814*^9}, {3.7143457953672247`*^9, 
+  3.7143457957730417`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"lmfp$b", " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"lmfp$", "[", "ztp", "]"}], " ", "/.", " ", 
+      RowBox[{"\[Rho]it$", "[", "ztp", "]"}]}], " ", "/.", " ", "pztp$a"}]}], 
+   ")"}], " ", "//", "Framed"}]], "Input",
+ CellChangeTimes->{{3.7143417066204023`*^9, 3.714341708183984*^9}, {
+  3.7143417709857063`*^9, 3.714341781500589*^9}, {3.7143418334623623`*^9, 
+  3.714341870491147*^9}, {3.714345604185278*^9, 3.714345607628147*^9}, {
+  3.714350468141181*^9, 3.714350471779916*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{"lmfp", "\[Rule]", 
+   FractionBox[
+    SuperscriptBox["cs", "2"], "g"]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.714341853990445*^9, 3.7143418707148027`*^9}, 
+   3.714345429699439*^9, 3.714345460358265*^9, 3.7143456081361113`*^9, 
+   3.714350171291616*^9, {3.714350472191771*^9, 3.714350475311309*^9}, 
+   3.7143521044257803`*^9, {3.714352942060109*^9, 3.714352969854086*^9}, 
+   3.714359232412758*^9, 3.7143595375068913`*^9, 3.714359973899283*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+which is the same as the definition of the scale height (Longcope paragraph \
+below 2.13)\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714342003452518*^9, 3.7143420452537737`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Show that the mean free path is less than the scale height throughout the \
+troposphere\
+\>", "Subsection",
+ CellChangeTimes->{{3.7143449458124237`*^9, 3.7143449692988167`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The pressure scale height can also be expressed as (Longcope paragraph below \
+2.13)\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714345122043983*^9, 3.7143451430591097`*^9}, {
+  3.71434522915275*^9, 3.714345230129776*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Hp$", " ", "=", " ", 
+   RowBox[{"Hp", "\[Rule]", " ", 
+    FractionBox[
+     RowBox[{"p", "[", "z", "]"}], 
+     RowBox[{
+      RowBox[{"\[Rho]", "[", "z", "]"}], " ", "g"}]]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7143452176945*^9, 3.714345259050383*^9}, {
+  3.714345369021284*^9, 3.7143453718733664`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Plug into the inequality", "Subsubsection",
+ CellChangeTimes->{{3.7143452848322678`*^9, 3.71434528841121*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ineq$b", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"lmfp", " ", "<", " ", "Hp"}], " ", "/.", " ", 
+     RowBox[{"lmfp$", "[", "z", "]"}]}], " ", "/.", " ", "Hp$"}], " ", "//", 
+   "FullSimplify"}]}]], "Input",
+ CellChangeTimes->{{3.714345290902409*^9, 3.714345354836932*^9}, {
+  3.714345393570483*^9, 3.714345406126132*^9}, {3.7143455554117002`*^9, 
+  3.714345599168014*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"g", " ", "m"}], "<", 
+  RowBox[{"\[Sigma]ir", " ", 
+   RowBox[{"p", "[", "z", "]"}]}]}]], "Output",
+ CellChangeTimes->{
+  3.7143453125988817`*^9, {3.7143453554023657`*^9, 3.714345429837414*^9}, 
+   3.714345460491678*^9, {3.7143455572571487`*^9, 3.7143456156775312`*^9}, 
+   3.714350171448852*^9, 3.714350475419372*^9, 3.714352104541169*^9, {
+   3.714352942298709*^9, 3.7143529701006117`*^9}, 3.714359232529635*^9, 
+   3.714359537608107*^9, 3.714359974131125*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Logically reduce the solution using the condition found in Part a.\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714345756943861*^9, 3.714345792109015*^9}}],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{
   RowBox[{
-   RowBox[{"od1$a", "[", 
-    RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", " ", 
-   RowBox[{"od1$a", "[", 
-    RowBox[{"[", "3", "]"}], "]"}]}], " ", "/.", " ", "\[Rho]hs$a"}]], "Input",\
-
- CellChangeTimes->{{3.714260906154222*^9, 3.71426090863902*^9}, {
-  3.71426393627569*^9, 3.714263945658025*^9}, {3.71426437306306*^9, 
-  3.7142643915322943`*^9}}],
+   RowBox[{"Reduce", "[", 
+    RowBox[{"{", 
+     RowBox[{"ineq$b", ",", " ", 
+      RowBox[{"pztp$a", "/.", " ", 
+       RowBox[{"Rule", " ", "\[Rule]", " ", "Equal"}]}]}], "}"}], "]"}], " ", 
+   "//", "FullSimplify"}], " ", "//", "Framed"}]], "Input",
+ CellChangeTimes->{{3.71434568546404*^9, 3.7143457240801373`*^9}, {
+  3.71434581169803*^9, 3.714345813224461*^9}}],
 
 Cell[BoxData[
- RowBox[{"ConditionalExpression", "[", 
+ FrameBox[
   RowBox[{
    RowBox[{
-    FractionBox[
-     RowBox[{
-      SuperscriptBox["cs", "2"], " ", "\[Sigma]ir", " ", 
-      RowBox[{"\[Rho]", "[", "ztp", "]"}]}], 
-     RowBox[{"g", " ", "m"}]], "\[Equal]", "1"}], ",", 
+    RowBox[{"g", " ", "m"}], "\[Equal]", 
+    RowBox[{"\[Sigma]ir", " ", 
+     RowBox[{"p", "[", "ztp", "]"}]}]}], "&&", 
    RowBox[{
-    RowBox[{"Re", "[", 
-     FractionBox["g", 
-      SuperscriptBox["cs", "2"]], "]"}], ">", "0"}]}], "]"}]], "Output",
- CellChangeTimes->{{3.7142609032143106`*^9, 3.714260908882716*^9}, {
-   3.7142643763193207`*^9, 3.714264392486052*^9}, 3.714264656691182*^9, 
-   3.7142647594585743`*^9, {3.714265392715658*^9, 3.714265397716302*^9}}]
+    RowBox[{"p", "[", "z", "]"}], ">", 
+    RowBox[{"p", "[", "ztp", "]"}]}]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.7143457174325*^9, 3.7143457243976803`*^9}, 
+   3.714345813531599*^9, 3.714350171539632*^9, 3.714350475579851*^9, 
+   3.7143521046483192`*^9, {3.714352942491268*^9, 3.7143529704363413`*^9}, 
+   3.714359232679543*^9, 3.714359537708057*^9, 3.714359974360057*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+Apparently, as long as the pressure is greater in the troposphere than it is \
+at the tropopause (as it should be) the mean free path is less than the scale \
+height throughout the troposphere\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7143458166482143`*^9, 3.7143458919161386`*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part c.", "Section",
+ CellChangeTimes->{{3.714345905272057*^9, 3.714345906911025*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Find the value of the polytropic index \[CapitalGamma] by assuming the entire \
+troposphere has the same radiative conductivity as the tropopause\
+\>", "Subsection",
+ CellChangeTimes->{{3.714346163246758*^9, 3.7143462201583433`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The polytropic exponent can be found using the expression (Longcope 2.23)\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.71434684800806*^9, 3.714346875118272*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[CapitalGamma]$", " ", "=", " ", 
+   RowBox[{"\[CapitalGamma]", "\[Rule]", " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"1", " ", "-", " ", 
+       FractionBox[
+        RowBox[{"kB", " ", "F"}], 
+        RowBox[{"m", " ", "g", " ", "\[Kappa]"}]]}], ")"}], 
+     RowBox[{"-", "1"}]]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7143469151843967`*^9, 3.714346978267564*^9}, {
+  3.714352099656383*^9, 3.714352100868456*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Plugging in the heat flux emitted by the planet, the radiative thermal \
+conductivity, the mean free path at the tropopause, and the definition of the \
+sound speed gives\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714349384990231*^9, 3.714349420239977*^9}, {
+  3.71434954971336*^9, 3.714349554033869*^9}, {3.714350224851103*^9, 
+  3.714350226741744*^9}, {3.714350676398683*^9, 3.714350697189433*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"\[CapitalGamma]$c", " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{"\[CapitalGamma]$", " ", "/.", " ", 
+            RowBox[{"F", "\[Rule]", " ", "F0"}]}], " ", "/.", " ", "F0E$"}], "/.",
+           " ", 
+          RowBox[{"\[Kappa]", "\[Rule]", "\[Kappa]rad"}]}], " ", "/.", 
+         "\[Kappa]rad$"}], " ", "/.", " ", 
+        RowBox[{"T", "\[Rule]", " ", "Teff"}]}], " ", "/.", " ", "lmfp$b"}], 
+      " ", "/.", " ", "cs$"}], "/.", " ", 
+     RowBox[{"T0", "\[Rule]", " ", "Teff"}]}]}], ")"}], " ", "//", 
+  "Framed"}]], "Input",
+ CellChangeTimes->{{3.7143494258852654`*^9, 3.714349460354961*^9}, {
+   3.7143495135571327`*^9, 3.714349517777849*^9}, {3.7143496230157747`*^9, 
+   3.714349639361516*^9}, {3.714350229685563*^9, 3.7143502389629297`*^9}, {
+   3.714350700092956*^9, 3.714350732765152*^9}, 3.714351212710408*^9}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{"\[CapitalGamma]", "\[Rule]", 
+   FractionBox["8", "7"]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.714349461265542*^9, 3.714349466190147*^9}, 
+   3.714349518065042*^9, {3.714349629844212*^9, 3.7143496396204653`*^9}, 
+   3.7143501716339703`*^9, {3.714350235719955*^9, 3.7143502398216457`*^9}, 
+   3.714350475671464*^9, {3.714350706259644*^9, 3.714350733012467*^9}, 
+   3.714351214154519*^9, 3.7143521047847643`*^9, {3.7143529428500767`*^9, 
+   3.714352970739787*^9}, 3.714359232805841*^9, 3.714359537831551*^9, 
+   3.7143599745114117`*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Check if the condition \[CapitalGamma] > \[Gamma] is satisfied", \
+"Subsection",
+ CellChangeTimes->{{3.714350897452414*^9, 3.714350917947744*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+For an ideal gas, the ratio of specific heats is given as a function of the \
+number of degrees of freedom, f\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714350922107573*^9, 3.714351013483589*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Gamma]$", " ", "=", 
+   RowBox[{"\[Gamma]", "\[Rule]", "  ", 
+    RowBox[{"1", " ", "+", " ", 
+     FractionBox["2", "f"]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7143509436995993`*^9, 3.714350956111701*^9}, {
+  3.714351225281536*^9, 3.714351227506384*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["The number of degrees of freedom must be greater than one", \
+"Subsubsection",
+ CellChangeTimes->{{3.71435100212786*^9, 3.714351025006394*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$Assumptions", " ", "=", " ", 
+   RowBox[{"$Assumptions", " ", "&&", " ", 
+    RowBox[{"f", " ", ">", " ", "1"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.714351027729746*^9, 3.714351047667457*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["We now have enough information to check the condition", "Subsubsection",
+ CellChangeTimes->{{3.714351180728257*^9, 3.7143511933990717`*^9}, {
+  3.714352245113353*^9, 3.714352265045394*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[CapitalGamma]", " ", ">", " ", "\[Gamma]"}], " ", "/.", " ", 
+     "\[CapitalGamma]$c"}], " ", "/.", " ", "\[Gamma]$"}], " ", "//", 
+   "Simplify"}], " ", "//", "Framed"}]], "Input",
+ CellChangeTimes->{{3.714351200680805*^9, 3.7143512454825478`*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{"f", ">", "14"}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.7143512214394913`*^9, 3.7143512457085543`*^9}, 
+   3.7143521049074917`*^9, {3.714352943196405*^9, 3.714352971175565*^9}, 
+   3.7143592330267677`*^9, 3.7143595380002937`*^9, 3.714359974712551*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+and the condition is not satisfied. Therefore the atmosphere is stable to \
+convection\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7143512530433073`*^9, 3.71435127212434*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part d.", "Section",
+ CellChangeTimes->{{3.7143512877165422`*^9, 3.7143512891046963`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Find the lapse rate for the Earth given the value for the polytropic index \
+calculated in Part c.\
+\>", "Subsection",
+ CellChangeTimes->{{3.714351300097534*^9, 3.714351334740823*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["The lapse rate is given by Longcope (2.18) as", "Subsubsection",
+ CellChangeTimes->{{3.714351399727437*^9, 3.7143514201923857`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dTdz$", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"T", "'"}], "[", "z", "]"}], "\[Rule]", " ", 
+    RowBox[{
+     RowBox[{"-", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", 
+        FractionBox["1", "\[CapitalGamma]"]}], ")"}]}], "  ", 
+     FractionBox[
+      RowBox[{"m", " ", "g"}], "kB"]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.714351423964603*^9, 3.71435150131878*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Plugging in the value for the polytropic index calculated for Part c. gives\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7143515551145363`*^9, 3.714351583873021*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"dTdz$d", " ", "=", " ", 
+    RowBox[{"dTdz$", " ", "/.", " ", "\[CapitalGamma]$c"}]}], ")"}], " ", "//",
+   "Framed"}]], "Input",
+ CellChangeTimes->{{3.714351590710371*^9, 3.71435159911548*^9}, {
+  3.714351637198514*^9, 3.714351642033629*^9}, {3.7143516732332582`*^9, 
+  3.714351685765005*^9}, {3.714352357271893*^9, 3.714352395442918*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{
+   RowBox[{
+    SuperscriptBox["T", "\[Prime]",
+     MultilineFunction->None], "[", "z", "]"}], "\[Rule]", 
+   RowBox[{"-", 
+    FractionBox[
+     RowBox[{"g", " ", "m"}], 
+     RowBox[{"8", " ", "kB"}]]}]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{
+  3.714352395797161*^9, {3.714352943406831*^9, 3.7143529714125347`*^9}, 
+   3.7143592332007017`*^9, 3.714359538163056*^9, 3.7143599749090157`*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Evaluated numerically, this is", "Subsubsection",
+ CellChangeTimes->{{3.7143527846516733`*^9, 3.714352808334786*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"dTdz$dv", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"dTdz$d", " ", "/.", " ", "vals"}], " ", "//", "UnitConvert"}]}],
+    ")"}], " ", "//", "Framed"}]], "Input",
+ CellChangeTimes->{{3.714352372976516*^9, 3.714352389197052*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{
+   RowBox[{
+    SuperscriptBox["T", "\[Prime]",
+     MultilineFunction->None], "[", "z", "]"}], "\[Rule]", 
+   TemplateBox[{
+    RowBox[{"-", "0.00426967879843524`"}],
+     RowBox[{"\"K\"", "\[InvisibleSpace]", "\"/\"", "\[InvisibleSpace]", 
+       "\"m\""}],"kelvins difference per meter",FractionBox[
+     "\"KelvinsDifference\"", "\"Meters\""]},
+    "Quantity"]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{
+  3.7143523906150293`*^9, {3.714352943605937*^9, 3.714352971615581*^9}, 
+   3.714359233330965*^9, 3.7143595382809687`*^9, 3.714359975065021*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Find the height of the tropopause for the Earth", "Subsection",
+ CellChangeTimes->{{3.7143517247040873`*^9, 3.714351735339085*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["We are given that the temperature at sea level is", "Subsubsection",
+ CellChangeTimes->{{3.714352438144381*^9, 3.7143524557620173`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"T0$d", " ", "=", 
+   RowBox[{
+    RowBox[{"T", "[", "0", "]"}], " ", "\[Equal]", "  ", "T0\[Earth]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.714352516895033*^9, 3.714352537729995*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"AppendTo", "[", 
+   RowBox[{"vals", ",", " ", 
+    RowBox[{"T0\[Earth]", "\[Rule]", " ", 
+     RowBox[{"300", 
+      TemplateBox[{
+       InterpretationBox["\[InvisibleSpace]", 1],"\"K\"","kelvins difference",
+        "\"KelvinsDifference\""},
+       "Quantity"]}]}]}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.714352465401939*^9, 3.714352511467371*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Integrate the lapse rate using the initial condition", "Subsubsection",
+ CellChangeTimes->{{3.71435241749479*^9, 3.714352422942762*^9}, {
+  3.714352550485743*^9, 3.714352555402836*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"T$d", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"DSolve", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"dTdz$d", "/.", " ", 
+        RowBox[{"Rule", "\[Rule]", " ", "Equal"}]}], ",", "T0$d"}], "}"}], 
+     ",", 
+     RowBox[{"T", "[", "z", "]"}], ",", "z"}], "]"}], "[", 
+   RowBox[{"[", 
+    RowBox[{"1", ",", "1"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.714352424740052*^9, 3.714352428314744*^9}, {
+  3.7143525407021503`*^9, 3.714352624053586*^9}, {3.7143526848332*^9, 
+  3.714352689205967*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"T", "[", "z", "]"}], "\[Rule]", 
+  FractionBox[
+   RowBox[{
+    RowBox[{"8", " ", "kB", " ", "T0\[Earth]"}], "-", 
+    RowBox[{"g", " ", "m", " ", "z"}]}], 
+   RowBox[{"8", " ", "kB"}]]}]], "Output",
+ CellChangeTimes->{{3.7143525662216*^9, 3.7143525857556067`*^9}, {
+   3.714352616191721*^9, 3.7143526243047543`*^9}, 3.714352689677593*^9, {
+   3.714352943957055*^9, 3.7143529718831263`*^9}, 3.7143592335511093`*^9, 
+   3.7143595384651012`*^9, 3.7143599752553587`*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+and solve for the height at which it is equal to the effective temperature\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714352637571604*^9, 3.714352651319646*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"ztp$d", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"Solve", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"T", "[", "z", "]"}], " ", "\[Equal]", " ", "Teff"}], " ", "/.",
+          "T$d"}], " ", "/.", " ", 
+        RowBox[{"z", "\[Rule]", " ", "ztp"}]}], ",", "ztp"}], "]"}], "[", 
+     RowBox[{"[", 
+      RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ")"}], " ", "//", 
+  "Framed"}]], "Input",
+ CellChangeTimes->{{3.714352661388636*^9, 3.71435276235973*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{"ztp", "\[Rule]", 
+   FractionBox[
+    RowBox[{"8", " ", "kB", " ", 
+     RowBox[{"(", 
+      RowBox[{"T0\[Earth]", "-", "Teff"}], ")"}]}], 
+    RowBox[{"g", " ", "m"}]]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.714352694094022*^9, 3.714352762606489*^9}, {
+   3.71435294412362*^9, 3.714352972108005*^9}, 3.714359233680728*^9, 
+   3.714359538566379*^9, 3.714359975385983*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Evaluated numerically, this is", "Subsubsection",
+ CellChangeTimes->{{3.714352795999669*^9, 3.7143528143838177`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"ztp$dV", " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ztp$d", "/.", " ", 
+       RowBox[{"Teff", " ", "\[Rule]", " ", "Teff\[Earth]"}]}], " ", "/.", 
+      " ", "vals"}], " ", "//", "UnitConvert"}]}], ")"}], " ", "//", 
+  "Framed"}]], "Input",
+ CellChangeTimes->{{3.714352819672265*^9, 3.7143528490184307`*^9}, {
+  3.714353027776675*^9, 3.714353039208592*^9}}],
+
+Cell[BoxData[
+ FrameBox[
+  RowBox[{"ztp", "\[Rule]", 
+   TemplateBox[{"14052.579323294513`","\"m\"","meters","\"Meters\""},
+    "Quantity"]}],
+  StripOnInput->False]], "Output",
+ CellChangeTimes->{{3.714352822572267*^9, 3.714352849632056*^9}, {
+   3.7143529442983913`*^9, 3.714352972288477*^9}, {3.714353033409368*^9, 
+   3.714353039456243*^9}, 3.714359233809518*^9, 3.71435953871495*^9, 
+   3.714359975554873*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part e.", "Section",
+ CellChangeTimes->{{3.7143530489666233`*^9, 3.7143530503350077`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Find an expression for the surface temperature", "Subsection",
+ CellChangeTimes->{{3.714353388713456*^9, 3.714353398898221*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+In the problem statement, we are told that the surface temperature takes the \
+form\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714353420179761*^9, 3.71435344453854*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"T0$e", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"T", "[", "0", "]"}], "\[Rule]", 
+     RowBox[{"Teff", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        FractionBox["p0", "C0"], ")"}], "b"]}]}]}], ";"}], " "}]], "Input",
+ CellChangeTimes->{{3.714353449633965*^9, 3.7143535008747997`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Solve the polytropic density relation for pressure", "Subsubsection",
+ CellChangeTimes->{{3.714359634291665*^9, 3.714359643343733*^9}, {
+  3.7143598932528257`*^9, 3.714359907717952*^9}, {3.714360046177944*^9, 
+  3.714360051531066*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"pit$", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Solve", "[", 
+     RowBox[{
+      RowBox[{"\[Rho]$", "/.", 
+       RowBox[{"Rule", "\[Rule]", " ", "Equal"}]}], ",", 
+      RowBox[{"p", "[", "z", "]"}]}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"1", ",", "1"}], "]"}], "]"}], " ", "//", "Quiet"}]}]], "Input",
+ CellChangeTimes->{{3.7143599200537567`*^9, 3.714359948847413*^9}, {
+  3.7143599860784807`*^9, 3.714360040154584*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"p", "[", "z", "]"}], "\[Rule]", 
+  SuperscriptBox[
+   RowBox[{"(", 
+    FractionBox[
+     RowBox[{"\[Rho]", "[", "z", "]"}], "K0"], ")"}], 
+   "\[CapitalGamma]"]}]], "Output",
+ CellChangeTimes->{{3.7143599374513903`*^9, 3.714360040644445*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Solve the ideal gas law for temperature", "Subsubsection",
+ CellChangeTimes->{{3.714359034415597*^9, 3.714359050810869*^9}, {
+  3.714359173216734*^9, 3.714359208813167*^9}, {3.714359611486471*^9, 
+  3.714359619175527*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Solve", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"p$", "[", "z", "]"}], "/.", 
+      RowBox[{"Rule", "\[Rule]", " ", "Equal"}]}], ",", 
+     RowBox[{"T", "[", "z", "]"}]}], "]"}], "[", 
+   RowBox[{"[", 
+    RowBox[{"1", ",", "1"}], "]"}], "]"}], "/.", "\[Rho]$"}]], "Input",
+ CellChangeTimes->{{3.7143594015237713`*^9, 3.7143594057288837`*^9}, {
+  3.7143595303659143`*^9, 3.714359599964752*^9}, {3.714360127305283*^9, 
+  3.7143601277465878`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"T", "[", "z", "]"}], "\[Rule]", 
+  FractionBox[
+   RowBox[{"m", " ", 
+    SuperscriptBox[
+     RowBox[{"p", "[", "z", "]"}], 
+     RowBox[{"1", "-", 
+      FractionBox["1", "\[CapitalGamma]"]}]]}], 
+   RowBox[{"K0", " ", "kB"}]]}]], "Output",
+ CellChangeTimes->{{3.714359532318874*^9, 3.71435960033247*^9}, 
+   3.714359975985593*^9, 3.714360128379141*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+As in Part d, integrate the lapse rate to find the functional form of the \
+temperature\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714356627179903*^9, 3.714356629756225*^9}, 
+   3.7143567423078623`*^9, {3.714356860944653*^9, 3.7143568707338877`*^9}, {
+   3.714356958290312*^9, 3.714356982483739*^9}, {3.7143571621280518`*^9, 
+   3.714357182568119*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"T$e", " ", "=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"DSolve", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"dTdz$d", "/.", " ", 
+         RowBox[{"Rule", "\[Rule]", " ", "Equal"}]}], ",", 
+        RowBox[{"T0$e", "/.", " ", 
+         RowBox[{"Rule", "\[Rule]", " ", "Equal"}]}]}], "}"}], ",", 
+      RowBox[{"T", "[", "z", "]"}], ",", "z"}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"1", ",", "1"}], "]"}], "]"}], " ", "//", 
+   "FullSimplify"}]}]], "Input",
+ CellChangeTimes->{{3.71435702982311*^9, 3.714357093641898*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"T", "[", "z", "]"}], "\[Rule]", 
+  RowBox[{
+   RowBox[{
+    SuperscriptBox[
+     RowBox[{"(", 
+      FractionBox["p0", "C0"], ")"}], "b"], " ", "Teff"}], "-", 
+   FractionBox[
+    RowBox[{"g", " ", "m", " ", "z"}], 
+    RowBox[{"8", " ", "kB"}]]}]}]], "Output",
+ CellChangeTimes->{{3.714357069083645*^9, 3.714357095793248*^9}, 
+   3.714359233934095*^9, 3.7143595389783373`*^9, 3.714359976218038*^9}]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -293,7 +1248,8 @@ Cell[BoxData[
 }, Open  ]]
 },
 WindowSize->{1920, 1026},
-WindowMargins->{{Automatic, 926}, {-72, 99}},
+WindowMargins->{{1920, Automatic}, {0, Automatic}},
+ShowCellTags->True,
 FrontEndVersion->"11.0 for Linux x86 (64-bit) (September 21, 2016)",
 StyleDefinitions->"Default.nb"
 ]
@@ -318,58 +1274,234 @@ Cell[1080, 39, 141, 2, 32, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[1258, 46, 110, 1, 35, "Subsubsection"],
-Cell[1371, 49, 131, 2, 32, "Input"]
+Cell[CellGroupData[{
+Cell[1393, 51, 850, 16, 32, "Input"],
+Cell[2246, 69, 793, 18, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1551, 57, 161, 3, 45, "Subsection"],
+Cell[3088, 93, 129, 1, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[1737, 64, 139, 1, 35, "Subsubsection"],
-Cell[CellGroupData[{
-Cell[1901, 69, 429, 10, 32, "Input"],
-Cell[2333, 81, 194, 5, 32, "Output"]
+Cell[3242, 98, 2041, 44, 48, "Input"],
+Cell[5286, 144, 1698, 39, 45, "Output"]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2576, 92, 131, 1, 35, "Subsubsection"],
+Cell[7045, 190, 161, 3, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[2732, 97, 279, 6, 34, "Input"],
-Cell[3014, 105, 161, 4, 34, "Output"]
+Cell[7231, 197, 139, 1, 35, "Subsubsection"],
+Cell[7373, 200, 476, 11, 34, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7886, 216, 131, 1, 35, "Subsubsection"],
+Cell[8020, 219, 323, 7, 36, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8380, 231, 133, 1, 35, "Subsubsection"],
+Cell[8516, 234, 341, 8, 54, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8894, 247, 190, 4, 35, "Subsubsection"],
+Cell[9087, 253, 288, 6, 36, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9412, 264, 187, 4, 35, "Subsubsection"],
+Cell[9602, 270, 601, 16, 79, "Input"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3224, 115, 133, 1, 35, "Subsubsection"],
+Cell[10252, 292, 125, 1, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[3382, 120, 234, 5, 53, "Input"],
-Cell[3619, 127, 160, 4, 49, "Output"]
+Cell[10402, 297, 113, 1, 35, "Subsubsection"],
+Cell[10518, 300, 269, 7, 44, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10824, 312, 104, 1, 35, "Subsubsection"],
+Cell[10931, 315, 408, 11, 54, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11376, 331, 121, 1, 35, "Subsubsection"],
+Cell[11500, 334, 344, 9, 36, "Input"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3828, 137, 187, 4, 35, "Subsubsection"],
-Cell[4018, 143, 601, 16, 79, "Input"]
+Cell[11893, 349, 94, 1, 65, "Section"],
+Cell[CellGroupData[{
+Cell[12012, 354, 214, 4, 45, "Subsection"],
+Cell[12229, 360, 704, 18, 57, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12970, 383, 125, 1, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[13120, 388, 445, 7, 35, "Subsubsection"],
+Cell[13568, 397, 803, 19, 43, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14408, 421, 270, 5, 35, "Subsubsection"],
+Cell[14681, 428, 585, 13, 54, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15303, 446, 381, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[15709, 457, 1117, 25, 34, "Input"],
+Cell[16829, 484, 897, 16, 56, "Output"]
+}, Open  ]]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4668, 165, 94, 1, 65, "Section"],
+Cell[17799, 508, 143, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[4787, 170, 133, 1, 45, "Subsection"],
-Cell[4923, 173, 630, 17, 57, "Input"]
+Cell[17967, 514, 216, 4, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[18208, 522, 286, 6, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[18519, 532, 549, 12, 32, "Input"],
+Cell[19071, 546, 502, 10, 66, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[19600, 560, 190, 4, 35, "Subsubsection"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5590, 195, 125, 1, 45, "Subsection"],
+Cell[19827, 569, 187, 4, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[5740, 200, 380, 6, 35, "Subsubsection"],
-Cell[6123, 208, 779, 19, 43, "Input"]
+Cell[20039, 577, 233, 5, 35, "Subsubsection"],
+Cell[20275, 584, 347, 9, 56, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[6939, 232, 200, 3, 35, "Subsubsection"],
-Cell[7142, 237, 361, 9, 54, "Input"]
+Cell[20659, 598, 116, 1, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[20800, 603, 422, 10, 32, "Input"],
+Cell[21225, 615, 497, 10, 32, "Output"]
+}, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7540, 251, 259, 5, 35, "Subsubsection"],
+Cell[21771, 631, 165, 3, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[7824, 260, 385, 10, 32, "Input"],
-Cell[8212, 272, 615, 15, 57, "Output"]
+Cell[21961, 638, 403, 10, 34, "Input"],
+Cell[22367, 650, 578, 14, 44, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[22972, 668, 295, 5, 35, "Subsubsection"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[23316, 679, 92, 1, 65, "Section"],
+Cell[CellGroupData[{
+Cell[23433, 684, 243, 4, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[23701, 692, 171, 3, 35, "Subsubsection"],
+Cell[23875, 697, 470, 12, 58, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24382, 714, 412, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[24819, 725, 976, 23, 32, "Input"],
+Cell[25798, 750, 590, 11, 58, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[26449, 768, 152, 2, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[26626, 774, 208, 4, 35, "Subsubsection"],
+Cell[26837, 780, 299, 7, 53, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27173, 792, 149, 2, 35, "Subsubsection"],
+Cell[27325, 796, 235, 5, 34, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27597, 806, 195, 2, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[27817, 812, 326, 8, 32, "Input"],
+Cell[28146, 822, 305, 6, 44, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[28478, 832, 186, 4, 35, "Subsubsection"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[28713, 842, 96, 1, 65, "Section"],
+Cell[CellGroupData[{
+Cell[28834, 847, 194, 4, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[29053, 855, 138, 1, 35, "Subsubsection"],
+Cell[29194, 858, 427, 13, 53, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29658, 876, 176, 3, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[29859, 883, 392, 8, 32, "Input"],
+Cell[30254, 893, 446, 13, 56, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30749, 912, 123, 1, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[30897, 917, 279, 7, 32, "Input"],
+Cell[31179, 926, 603, 15, 47, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[31843, 948, 137, 1, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[32005, 953, 142, 1, 35, "Subsubsection"],
+Cell[32150, 956, 225, 6, 34, "Input"],
+Cell[32378, 964, 394, 10, 36, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[32809, 979, 191, 2, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[33025, 985, 550, 15, 34, "Input"],
+Cell[33578, 1002, 502, 11, 50, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[34129, 1019, 173, 3, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[34327, 1026, 550, 16, 34, "Input"],
+Cell[34880, 1044, 427, 11, 62, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[35356, 1061, 123, 1, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[35504, 1066, 425, 11, 32, "Input"],
+Cell[35932, 1079, 414, 9, 45, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36419, 1096, 96, 1, 65, "Section"],
+Cell[CellGroupData[{
+Cell[36540, 1101, 134, 1, 45, "Subsection"],
+Cell[CellGroupData[{
+Cell[36699, 1106, 181, 4, 35, "Subsubsection"],
+Cell[36883, 1112, 338, 10, 53, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[37258, 1127, 241, 3, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[37524, 1134, 466, 12, 34, "Input"],
+Cell[37993, 1148, 278, 8, 48, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38320, 1162, 228, 3, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[38573, 1169, 499, 13, 34, "Input"],
+Cell[39075, 1184, 390, 11, 61, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[39514, 1201, 364, 7, 35, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[39903, 1212, 582, 16, 34, "Input"],
+Cell[40488, 1230, 434, 12, 49, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -378,6 +1510,4 @@ Cell[8212, 272, 615, 15, 57, "Output"]
 }
 ]
 *)
-
-(* End of internal cache information *)
 
