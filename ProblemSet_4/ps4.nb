@@ -1,0 +1,263 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      8595,        253]
+NotebookOptionsPosition[      6645,        208]
+NotebookOutlinePosition[      6988,        223]
+CellTagsIndexPosition[      6945,        220]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+PHSX 565 Astrophysical Plasma Physics
+Problem Set 4 - Accretion Disks
+Roy Smart\
+\>", "Chapter",
+ CellChangeTimes->{{3.716310985929001*^9, 3.7163110339549303`*^9}, {
+  3.716311084951503*^9, 
+  3.7163110967076263`*^9}},ExpressionUUID->"486a0ffd-ae72-479a-86a1-\
+581d02934873"],
+
+Cell[CellGroupData[{
+
+Cell["Prepare Mathematica environment", "Subsection",
+ CellChangeTimes->{{3.7163111085893993`*^9, 
+  3.716311118019713*^9}},ExpressionUUID->"d5575793-9cfe-4ec7-bfdc-\
+19182edcde85"],
+
+Cell[CellGroupData[{
+
+Cell["Clear variables", "Subsubsection",
+ CellChangeTimes->{{3.7163111280728703`*^9, 
+  3.716311130825733*^9}},ExpressionUUID->"5007ef2f-66b9-4810-9aeb-\
+f23005a3ef53"],
+
+Cell[BoxData[
+ RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.7132229470758877`*^9, 
+  3.713222955978175*^9}},ExpressionUUID->"b4b30f56-3215-4514-aa69-\
+3dad9bb3038a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Define shortcut to convert rule to equation", "Subsubsection",
+ CellChangeTimes->{{3.7144347504965076`*^9, 
+  3.714434759733533*^9}},ExpressionUUID->"4f97f813-2594-4aee-a5df-\
+70ab73557ce2"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"r2e", " ", "=", " ", 
+   RowBox[{"Rule", " ", "\[Rule]", " ", "Equal"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.714428673697979*^9, 
+  3.714428685703141*^9}},ExpressionUUID->"9e3d4d9e-c719-4726-a1d5-\
+f32d5dcebef9"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Use preprint variable to print derivatives in traditional form\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.714862881672126*^9, 3.714862906948285*^9}, {
+  3.715288830263389*^9, 3.7152888319173326`*^9}, {3.716311165069886*^9, 
+  3.716311178323806*^9}},ExpressionUUID->"81d5ffec-45ec-43cf-8da9-\
+f29ccab2c8e9"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$PrePrint", "=", 
+   RowBox[{
+    RowBox[{"#", "/.", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"Derivative", "[", "id__", "]"}], "[", "f_", "]"}], "[", 
+       "args__", "]"}], "\[RuleDelayed]", 
+      RowBox[{"TraditionalForm", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"HoldForm", "@", 
+          RowBox[{"D", "[", 
+           RowBox[{
+            RowBox[{"f", "[", "args", "]"}], ",", "#"}], "]"}]}], "&"}], "[", 
+        
+        RowBox[{"Sequence", "@@", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"DeleteCases", "[", 
+            RowBox[{
+             RowBox[{"Transpose", "[", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", "args", "}"}], ",", 
+                RowBox[{"{", "id", "}"}]}], "}"}], "]"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"_", ",", "0"}], "}"}]}], "]"}], "/.", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"x_", ",", "1"}], "}"}], "\[RuleDelayed]", "x"}]}], 
+          ")"}]}], "]"}], "]"}]}]}], "&"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7148625082004957`*^9, 3.7148625103903008`*^9}, {
+   3.714951152294211*^9, 3.7149511789777613`*^9}, {3.715037044464157*^9, 
+   3.715037059164897*^9}, {3.715288791866516*^9, 3.715288814524164*^9}, {
+   3.7152888558664703`*^9, 3.715288872144845*^9}, 3.715289199447239*^9, {
+   3.715289232847644*^9, 3.715289234070962*^9}, {3.7152892896872663`*^9, 
+   3.715289292050618*^9}, {3.715289370264666*^9, 3.7152893702998238`*^9}, {
+   3.715289409996471*^9, 
+   3.71528941045711*^9}},ExpressionUUID->"04f864dd-f0fc-42ed-9d71-\
+252304a75475"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Save the information provided in the problem statement", "Subsection",
+ CellChangeTimes->{{3.716311206374247*^9, 
+  3.716311216004177*^9}},ExpressionUUID->"30daafa1-d4d1-4011-a22a-\
+ba258698e387"],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+The dominant, azimuthal flow velocity is given in cylindrical coordinates as\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7163112437901707`*^9, 3.716311270174489*^9}, {
+  3.716311345970973*^9, 
+  3.7163113540049477`*^9}},ExpressionUUID->"1330ea5c-7ca4-478e-ae05-\
+1f509b39f7e3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"u$0", " ", "=", " ", 
+   RowBox[{"u", "\[Rule]", " ", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", 
+      RowBox[{"\[CurlyPi]", " ", 
+       RowBox[{"\[CapitalOmega]", "[", "\[CurlyPi]", "]"}]}]}], "}"}]}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.716311288890753*^9, 3.7163112920946198`*^9}, {
+  3.7163113414970093`*^9, 3.716311362451425*^9}, {3.716311453933879*^9, 
+  3.716311469997773*^9}},ExpressionUUID->"e67e79d6-af7c-4e31-8a96-\
+19902a29c6e7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["The gravitational potential is approximated as", "Subsubsection",
+ CellChangeTimes->{{3.7163114920855913`*^9, 3.7163115021774473`*^9}, {
+  3.716312087382658*^9, 
+  3.71631209007242*^9}},ExpressionUUID->"5480b2ba-dcc8-40a0-bf6f-\
+8d02abd1937c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Psi]$0", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"\[Psi]", "[", 
+     RowBox[{"\[CurlyPi]", ",", "z"}], "]"}], " ", "\[Rule]", " ", 
+    RowBox[{
+     FractionBox[
+      RowBox[{"G", " ", "M"}], "\[CurlyPi]"], "+", 
+     RowBox[{
+      FractionBox["1", "2"], 
+      SuperscriptBox[
+       RowBox[{"\[CapitalOmega]k", "[", "\[CurlyPi]", "]"}], "2"], 
+      SuperscriptBox["z", "2"]}]}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.716311517924446*^9, 3.716311637201806*^9}, {
+  3.716311720407515*^9, 
+  3.716311720509692*^9}},ExpressionUUID->"bc9a337a-0fef-423e-92da-\
+4a55edc4f74b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Where the Keplarian rotation is", "Subsubsection",
+ CellChangeTimes->{{3.716311640520265*^9, 
+  3.716311651020525*^9}},ExpressionUUID->"987326c6-382a-4c61-853c-\
+5db46bb78142"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[CapitalOmega]k$0", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"\[CapitalOmega]k", "[", "\[CurlyPi]", "]"}], "\[Rule]", 
+    FractionBox[
+     RowBox[{"G", " ", "M"}], 
+     SuperscriptBox["\[CurlyPi]", "3"]]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.716311652580421*^9, 3.716311723243308*^9}, {
+  3.716312011067314*^9, 
+  3.716312011176753*^9}},ExpressionUUID->"4f651581-47e0-4da9-94d8-\
+b31b3b087092"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1920, 1053},
+WindowMargins->{{1920, Automatic}, {Automatic, 26}},
+FrontEndVersion->"11.2 for Linux x86 (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 285, 8, 165, "Chapter",ExpressionUUID->"486a0ffd-ae72-479a-86a1-581d02934873"],
+Cell[CellGroupData[{
+Cell[890, 34, 181, 3, 55, "Subsection",ExpressionUUID->"d5575793-9cfe-4ec7-bfdc-19182edcde85"],
+Cell[CellGroupData[{
+Cell[1096, 41, 168, 3, 45, "Subsubsection",ExpressionUUID->"5007ef2f-66b9-4810-9aeb-f23005a3ef53"],
+Cell[1267, 46, 201, 4, 31, "Input",ExpressionUUID->"b4b30f56-3215-4514-aa69-3dad9bb3038a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1505, 55, 196, 3, 45, "Subsubsection",ExpressionUUID->"4f97f813-2594-4aee-a5df-70ab73557ce2"],
+Cell[1704, 60, 252, 6, 31, "Input",ExpressionUUID->"9e3d4d9e-c719-4726-a1d5-f32d5dcebef9"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1993, 71, 318, 6, 45, "Subsubsection",ExpressionUUID->"81d5ffec-45ec-43cf-8da9-f29ccab2c8e9"],
+Cell[2314, 79, 1662, 42, 31, "Input",ExpressionUUID->"04f864dd-f0fc-42ed-9d71-252304a75475"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4025, 127, 202, 3, 55, "Subsection",ExpressionUUID->"30daafa1-d4d1-4011-a22a-ba258698e387"],
+Cell[CellGroupData[{
+Cell[4252, 134, 288, 6, 45, "Subsubsection",ExpressionUUID->"1330ea5c-7ca4-478e-ae05-1f509b39f7e3"],
+Cell[4543, 142, 495, 12, 31, "Input",ExpressionUUID->"e67e79d6-af7c-4e31-8a96-19902a29c6e7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5075, 159, 249, 4, 45, "Subsubsection",ExpressionUUID->"5480b2ba-dcc8-40a0-bf6f-8d02abd1937c"],
+Cell[5327, 165, 618, 17, 49, "Input",ExpressionUUID->"bc9a337a-0fef-423e-92da-4a55edc4f74b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5982, 187, 182, 3, 45, "Subsubsection",ExpressionUUID->"987326c6-382a-4c61-853c-5db46bb78142"],
+Cell[6167, 192, 438, 11, 50, "Input",ExpressionUUID->"4f651581-47e0-4da9-94d8-b31b3b087092"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
