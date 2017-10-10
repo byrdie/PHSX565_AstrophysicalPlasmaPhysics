@@ -5,28 +5,63 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\title{PHSX 567 \\ Astrophysical Plasma Physics \\ Final Project Proposal}
-\author{Roy Smart}
+
+\usepackage[backend=bibtex, style=authoryear]{biblatex}
+\addbibresource{sources.bib}
+\usepackage{hyperref}
+
+\title{Hyperbolic Heat Conduction Under Coronal Conditions }
+\author{PHSX 567 Astrophysical Plasma Physics \\ Final Project Proposal \\  Roy Smart}
+
 \begin{document}
 	
 	\maketitle
 	
-	\noindent
+	\section{Focus}
 	
-	Over the past several decades, there has been an immense effort to model the solar atmosphere and the underlying convective zone through numerical approximations of magnetohydrodynamics. These models 
+	An accurate treatment of heat conduction is important for models of the solar atmosphere due to its role in coronal heating. Unfortunately, the parabolic behavior of the heat conduction term can impose a prohibitive time-step constraint (under coronal conditions) for explicit finite-difference solvers, used to numerically evaluate the equations of (magneto)hydrodynamics. Recently, \cite{2017ApJ...834...10R} used a hyperbolic form of heat conduction to alleviate the time-step constraint in a comprehensive model of the solar atmosphere. We propose to test the efficacy of this method on the post-flare loop model developed by \cite{2014ApJ...795...10L} and answer the question: \textbf{Can we quantify the error between the hyperbolic and parabolic forms of heat conduction under coronal conditions as a function of time-step size?}
 	
-	Magnetohydrodynamics is a popular 
+	\section{Method}
 	
-	The solar atmosphere is a chaotic environment characterized by million-degree plasma driven by intense magnetic fields originating deep within the solar convective zone. 
-	A coupled system of nonlinear differential equations composed of conservation of mass, momentum and energy, along with Maxwell's equations are used to model the statistical behavior of the plasma in the solar atmosphere. This system of equations is known as magnetohydro
+	We propose to answer the above question by first implementing an explicit finite-difference solution of the post-flare loop model detailed in \cite{2014ApJ...795...10L}. We will then modify the \cite{2014ApJ...795...10L} model with the hyperbolic heat conduction treatment as described by \cite{2017ApJ...834...10R}. We will produce the appropriate plots to describe the difference between the parabolic and hyperbolic forms of the heat conduction term as a function of time-step size.
 	
+	\section{Aspect} 
 	
-	The statistical behavior of this plasma is governed by magnetohydrodynamics (MHD) which consists of a nonlinear coupled system of differential equations describing conservation of mass, momentum, and energy
+	Heat conduction is term in the energy equation, which is described in Section 1E.2 of the class notes. Coronal loops can be thought of as one-dimensional atmospheres, and we can model them using the hydrodynamics equations, described in Section 2C of the class notes.
 	
+	\printbibliography
 	
-	use conservation of mass, momentum and energy, along with Maxwell's equations to predict future configurations of the plasma given some initial condition. 
-	Unfortunately, the MHD equations have no known analytic solutions over an arbitrary domain, so solutions must be approximated using numerical techniques.
+%	Magnetohydrodynamics (MHD) is an important tool for modeling statistical properties of the plasma composing the solar atmosphere.
+%	Unfortunately, there are no known analytic solutions to the system of nonlinear partial differential equations (PDEs) (known as the MHD equations) for an arbitrary domain and initial condition.
+%	Investigators often construct approximate solutions to the MHD equations using numerical techniques such as the finite-difference method (FDM).
+%	
+%	FDMs approximate a PDE as an algebraic equation by expressing variables on a discrete grid and using polynomial interpolation to transform derivatives into differences.
+%	To reduce complexity, only a subset of grid points are used to calculate the derivative at some point. Using the set of points with a lower index than the current point is known as a backward difference, while using the set of points with a higher index than the current point is known as a forward difference.
+%	FDMs are often divided into explicit (E-FDM) and implicit (I-FDM) schemes.
+%	E-FDMs use a forward difference for time derivatives which means the value at of any variable at some timestep depends only on values obtained in the previous timestep, so the derivative is evaluated easily
+%	Meanwhile, I-FDMs use a backward difference for time derivatives, so the value of any variable at some timestep depends on the values calculated in the current timestep, meaning  
+%	
+%	Explicit FDM (E-FDM) expresses time derivatives
+%	
+%	Many models of the solar corona rely on magnetohydrodynamics (MHD) to calculate the statistical properties of the atmospheric plasma.
+%	
+%	Explict finite-difference (EFD) methods are an important technique for solving partial differential equations (PDE) often used in plasma physics.
+%	EFD transforms a PDE into an algebraic equation by evaluating all variables on a parallel-piped grid and 
+%	
+%	Over the past several decades, there has been an immense effort to model the solar atmosphere and the underlying convective zone through numerical approximations of magnetohydrodynamics. These models 
+%	
+%	Magnetohydrodynamics is a popular 
+%	
+%	The solar atmosphere is a chaotic environment characterized by million-degree plasma driven by intense magnetic fields originating deep within the solar convective zone. 
+%	A coupled system of nonlinear differential equations composed of conservation of mass, momentum and energy, along with Maxwell's equations are used to model the statistical behavior of the plasma in the solar atmosphere. This system of equations is known as magnetohydro
+%	
+%	
+%	The statistical behavior of this plasma is governed by magnetohydrodynamics (MHD) which consists of a nonlinear coupled system of differential equations describing conservation of mass, momentum, and energy
+%	
+%	
+%	use conservation of mass, momentum and energy, along with Maxwell's equations to predict future configurations of the plasma given some initial condition. 
+%	Unfortunately, the MHD equations have no known analytic solutions over an arbitrary domain, so solutions must be approximated using numerical techniques.
+%	
+%	Possibly the most popular technique for numerical solutions of the MHD equations is known as explicit finite-difference, where
 	
-	Possibly the most popular technique for numerical solutions of the MHD equations is known as explicit finite-difference, where
-	
-\end{document}
+\end{document}\grid

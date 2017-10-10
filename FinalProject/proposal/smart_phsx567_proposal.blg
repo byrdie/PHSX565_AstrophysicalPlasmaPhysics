@@ -1,0 +1,61 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: smart_phsx567_proposal.aux
+The style file: biblatex.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: smart_phsx567_proposal-blx.bib
+Database file #2: sources.bib
+Biblatex version: 3.3
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+You've used 3 entries,
+            6047 wiz_defined-function locations,
+            1153 strings with 8775 characters,
+and the built_in function-call counts, 7190 in all, are:
+= -- 240
+> -- 237
+< -- 53
++ -- 80
+- -- 89
+* -- 504
+:= -- 614
+add.period$ -- 0
+call.type$ -- 3
+change.case$ -- 22
+chr.to.int$ -- 46
+cite$ -- 4
+duplicate$ -- 715
+empty$ -- 795
+format.name$ -- 96
+if$ -- 1604
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 0
+newline$ -- 89
+num.names$ -- 82
+pop$ -- 648
+preamble$ -- 1
+purify$ -- 24
+quote$ -- 0
+skip$ -- 398
+stack$ -- 0
+substring$ -- 185
+swap$ -- 303
+text.length$ -- 64
+text.prefix$ -- 2
+top$ -- 1
+type$ -- 102
+warning$ -- 0
+while$ -- 100
+width$ -- 0
+write$ -- 85
