@@ -3,12 +3,14 @@
 // define physical constants
 const float kappa = 1.0;
 
-__global__ void heat_1d(float * T, uint n, float dt, float * x, uint Lx, uint m_f, uint m_b){
+
+
+__global__ void heat_1d(float * T, uint n, float dt, float * x, uint Lx, uint sx, uint m_b){
 
 	// Find index from threadId
-	uint i = threadIdx.x;
+	uint i = blockIdx.x * sx + threadIdx.x;
 
-	if(i != 0 and i != Lx -1){
+	if(i > 1 and i < Lx -1){
 
 		// Load stencil
 		float T9 = load_T(T, n, i - 1, 0, 0, Lx, 1, 1);
@@ -44,9 +46,25 @@ __global__ void heat_1d(float * T, uint n, float dt, float * x, uint Lx, uint m_
 
 }
 
+__global__ void heat_1d_cuda(dim3 blocks, dim3 threads, float * T, float dt, float * x, uint Lt, uint Lx, uint sx,  uint m_b){
+
+	// main time-marching loop
+	for(uint n = 0; n < Lt - 1; n++){
+
+		heat_1d<<<blocks, threads>>>(T, n, dt, x, Lx, sx, m_b);
+
+		cudaDeviceSynchronize();
+
+	}
+
+	return;
+
+}
+
+
 void heat_1d_cpu(float * T, float dt, float * x, uint Lt, uint Lx, uint m_f, uint m_b){
 
-	for(uint n = 0; n < Lt; n++){
+	for(uint n = 0; n < Lt-1; n++){
 
 		for(uint i = 0; i < Lx; i++){
 
@@ -99,18 +117,21 @@ int main(void)
 	uint m_b = 1;
 	uint m = m_b + m_f;
 
-	// Specify the size of the domain in gridpoints
-	uint Nt = 1e5;
-	uint Nz = 1;
-	uint Ny = 1;
-	uint Nx = 1024;	// x is the fastest changing dimension
-	uint N = Nx * Ny * Nz * Nt;
+	// size of strides
+	uint sx = 1024;
+	uint sy = 1;
+	uint sz = 1;
 
-	//
-	uint Lt = Nt;
-	uint Lz = Nz;
-	uint Ly = Ny;
-	uint Lx = Nx;	// x is the fastest changing dimension
+	// number of strides
+	uint Nx = 2048;
+	uint Ny = 1;
+	uint Nz = 1;
+
+	// Size of domain in gridpoints (including boundary cells)
+	uint Lt = 32;
+	uint Lx = Nx * sx;
+	uint Ly = Ny * sy;
+	uint Lz = Nz * sz;
 	uint L = Lx * Ly * Lz * Lt;
 
 	// Size of the domain in bytes
@@ -197,8 +218,15 @@ int main(void)
 	CHECK(cudaMemcpy(y_d, y_h, Ly_B, cudaMemcpyHostToDevice));
 	CHECK(cudaMemcpy(z_d, z_h, Lz_B, cudaMemcpyHostToDevice));
 
-	dim3 threads(Lx, 1, 1);
-	dim3 blocks(1, Ly, Lz);
+	struct timeval t1, t2;
+	gettimeofday(&t1, 0);
+	heat_1d_cpu(T_cpu, dt, x_h, Lt, Lx, m_f, m_b);
+	gettimeofday(&t2, 0);
+	double time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
+	printf("cpu:  %f ms\n", time);
+
+	dim3 threads(sx, sy, sz);
+	dim3 blocks(Nx, Ny, Nz);
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -206,18 +234,34 @@ int main(void)
 	cudaEventRecord(start);
 
 	// main time-marching loop
-	for(n = 0; n < Lt; n++){
+	for(n = 0; n < Lt-1; n++){
 
-		heat_1d<<<blocks, threads>>>(T_d, n, dt, x_d, Lx, m_f, m_b);
+		heat_1d<<<blocks, threads>>>(T_d, n, dt, x_d, Lx, sx, m_b);
 
 		cudaDeviceSynchronize();
 
 	}
+
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	float milliseconds = 0;
 	cudaEventElapsedTime(&milliseconds, start, stop);
-	printf("gpu: %f ms\n", milliseconds);
+	printf("gpu t =  %f ms, R = %f\n", milliseconds, time / milliseconds);
+
+	///////////////////////////////////////
+
+
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start);
+
+	heat_1d_cuda<<<1,1>>>(blocks, threads, T_d, dt, x_h, Lt, Lx, sx, m_b);
+
+	cudaEventRecord(stop);
+	cudaEventSynchronize(stop);
+	milliseconds = 0;
+	cudaEventElapsedTime(&milliseconds, start, stop);
+	printf("dyanmic gpu t =  %f ms, R = %f\n", milliseconds, time / milliseconds);
 
 	// transfer data from the host to the device
 	CHECK(cudaMemcpy(T_h, T_d, L_B, cudaMemcpyDeviceToHost));
@@ -228,12 +272,7 @@ int main(void)
 
 
 
-	struct timeval t1, t2;
-	gettimeofday(&t1, 0);
-	heat_1d_cpu(T_cpu, dt, x_h, Lt, Lx, m_f, m_b);
-	gettimeofday(&t2, 0);
-	double time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
-	printf("cpu:  %f ms\n", time);
+
 
 
 	// open files
@@ -268,14 +307,11 @@ int main(void)
 	fclose(z_f);
 	fclose(T_f_cpu);
 
+	printf("here!");
+
 	return 0;
 }
 
-__global__ void solve(float * T, float * t, float * x, float * y, float * z, uint Lt, uint Lx, uint Ly, uint Lz){
-
-
-
-}
 
 
 
