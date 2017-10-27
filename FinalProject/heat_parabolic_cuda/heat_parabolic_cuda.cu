@@ -13,21 +13,36 @@ int main(void)
 
 
 	// allocate cpu memory
-	float * T = new float[L];
+	float * T_cpu = new float[L];
+	float * T_gpu = new float[L];
 	float * t = new float[Lt];
 	float * x = new float[Lx];
 
 	// apply initial conditions
-	initial_conditions(T);
+	initial_conditions(T_cpu);
+	initial_conditions(T_gpu);
 
 	// initialize the grid
 	initial_grid(t, x);
 
 	// run CPU test
-	heat_1d_cpu_solve(T, t, x);
+	heat_1d_cpu_solve(T_cpu, t, x);
 
 	// run GPU test
-	heat_1d_gpu_solve(T, t, x);
+	heat_1d_gpu_solve(T_gpu, t, x);
+
+	// check equality
+	bool divergence = false;
+	for(uint l = 0; l < L; l++) {
+		if(std::abs(T_cpu[l] - T_gpu[l]) > 1e-5){
+			divergence = true;
+		}
+	}
+	if(divergence == false){
+		printf("CPU/GPU match\n");
+	} else {
+		printf("CPU/GPU DIVERGENCE!!!!!!!!!!\n");
+	}
 
 	// print something so we know it didn't crash somewhere
 	printf("All tests completed!\n");
@@ -78,9 +93,13 @@ void heat_1d_gpu_solve(float * T, float * t, float * x){
 	// main time-marching loop
 	for(uint n = 0; n < Lt-1; n++){
 
-		const dim3 threads(sx, sy, sz);
-		const dim3 blocks(Nx, Ny, Nz);
-		heat_1d_device_step<<<blocks, threads>>>(T_d, x_d, n);
+//		const uint threads = sx;
+//		const uint blocks = Nx;
+//		heat_1d_device_step<<<blocks, threads>>>(T_d, x_d, n);
+
+		const uint threads = lx;
+		const uint blocks = Nx;
+		heat_1d_shared_step<<<blocks, threads>>>(T_d, x_d, n);
 
 		cudaDeviceSynchronize();
 
@@ -156,30 +175,32 @@ __global__ void heat_1d_shared_step(float * T, float * x, uint n){
 __global__ void heat_1d_device_step(float * T, float * x, uint n){
 
 	// Find index from threadId
-	uint i = blockIdx.x * sx + threadIdx.x;
+	uint i = blockIdx.x * blockDim.x + threadIdx.x + 1;
 
-	if(i > 0 and i < Lx -1){
+	// Load stencil
+	float T9 = T[n * Lx + (i - 1)];
+	float T0 = T[n * Lx + (i + 0)];
+	float T1 = T[n * Lx + (i + 1)];
 
-		// Load stencil
-		float T9 = T[n * Lx + (i - 1)];
-		float T0 = T[n * Lx + (i + 0)];
-		float T1 = T[n * Lx + (i + 1)];
+	// Load position grid
+	float x9 = x[i - 1];
+	float x0 = x[i + 0];
+	float x1 = x[i + 1];
 
-		// Load position grid
-		float x9 = x[i - 1];
-		float x0 = x[i + 0];
-		float x1 = x[i + 1];
+	// compute Laplacian
+	float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
 
-		// compute Laplacian
-		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+	// compute time-update
+	float Tn = T0 + dt * (kappa * DDx_T0);
 
-		// compute time-update
-		float Tn = T0 + dt * (kappa * DDx_T0);
+	// update global memory
+	T[(n + 1) * Lx + i] = Tn;
 
-		// update global memory
-		T[(n + 1) * Lx + i] = Tn;
-	} else {	// boundary condition
-		T[(n + 1) * Lx + i] = 0;
+	// apply boundary conditions
+	if (i == 1) {
+		T[(n + 1) * Lx + 0] = 0;
+	} else if (i == Lx - 2){
+		T[(n + 1) * Lx + (Lx - 1)] = 0;
 	}
 
 	return;
