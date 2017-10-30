@@ -31,7 +31,7 @@ void heat_1d_gpu_solve(float * T, float * t, float * x);
 
 __global__ void heat_1d_device_step(float * T, float * x, uint n);
 __global__ void heat_1d_shared_step(float * T, float * x, uint n);
-__global__ void heat_1d_shuffl_step(float * T, float * x, uint n);
+__global__ void heat_1d_shfl_step(float * T, float * x, uint n);
 
 void save_results(std::string path, float * T, float * t, float * x);
 

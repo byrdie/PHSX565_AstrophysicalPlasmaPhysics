@@ -27,8 +27,8 @@ const uint Nx = 1024;
 
 // Size of domain in gridpoints (including boundary cells)
 const uint Lt = 16;
-const uint Lx = Nx * sx + m;
-//const uint Lx = Nx * lx;
+//const uint Lx = Nx * sx + m;
+const uint Lx = Nx * lx;
 const uint L = Lx * Lt;
 
 // Size of the domain in bytes

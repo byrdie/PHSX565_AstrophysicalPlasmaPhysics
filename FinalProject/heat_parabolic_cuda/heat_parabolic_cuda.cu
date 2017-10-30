@@ -31,18 +31,22 @@ int main(void)
 	// run GPU test
 	heat_1d_gpu_solve(T_gpu, t, x);
 
-	// check equality
+	// calculate rms error
 	bool divergence = false;
+	float rms = 0.0;
 	for(uint l = 0; l < L; l++) {
-		if(std::abs(T_cpu[l] - T_gpu[l]) > 1e-5){
-			divergence = true;
-		}
+		rms += (T_cpu[l] - T_gpu[l]) * (T_cpu[l] - T_gpu[l]);
+		//		if(std::abs(T_cpu[l] - T_gpu[l]) > 1e-5){
+		//			divergence = true;
+		//		}
 	}
-	if(divergence == false){
-		printf("CPU/GPU match\n");
-	} else {
-		printf("CPU/GPU DIVERGENCE!!!!!!!!!!\n");
-	}
+	rms = std::sqrt(rms / (float) L);
+	printf("CPU-GPU RMS error = %e \n", rms);
+	//	if(divergence == false){
+	//		printf("CPU/GPU match\n");
+	//	} else {
+	//		printf("CPU/GPU DIVERGENCE!!!!!!!!!!\n");
+	//	}
 
 	// print something so we know it didn't crash somewhere
 	printf("All tests completed!\n");
@@ -59,7 +63,10 @@ void heat_1d_gpu_solve(float * T, float * t, float * x){
 	// Print device and precision
 	cudaDeviceProp prop;
 	CHECK(cudaGetDeviceProperties(&prop, 0));
-	//	print_device_properties(prop);
+	//		print_device_properties(prop);
+
+	// configure then amount of shared memory
+	CHECK(cudaDeviceSetCacheConfig(cudaFuncCachePreferL1));
 
 	// allocate pinned host memory
 	float *T_h;						// dependent variables
@@ -93,13 +100,17 @@ void heat_1d_gpu_solve(float * T, float * t, float * x){
 	// main time-marching loop
 	for(uint n = 0; n < Lt-1; n++){
 
-//		const uint threads = sx;
-//		const uint blocks = Nx;
-//		heat_1d_device_step<<<blocks, threads>>>(T_d, x_d, n);
+				const uint threads = lx;
+				const uint blocks = Nx;
+				heat_1d_device_step<<<blocks, threads>>>(T_d, x_d, n);
 
-		const uint threads = lx;
-		const uint blocks = Nx;
-		heat_1d_shared_step<<<blocks, threads>>>(T_d, x_d, n);
+		//		const uint threads = lx;
+		//		const uint blocks = Nx;
+		//		heat_1d_shared_step<<<blocks, threads>>>(T_d, x_d, n);
+
+//		const uint threads = lx;
+//		const uint blocks = Nx;
+//		heat_1d_shfl_step<<<blocks, threads>>>(T_d, x_d, n);
 
 		cudaDeviceSynchronize();
 
@@ -124,6 +135,53 @@ void heat_1d_gpu_solve(float * T, float * t, float * x){
 
 }
 
+__global__ void heat_1d_shfl_step(float * T, float * x, uint n){
+
+	// Find index from threadId
+	uint i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	uint laneID = threadIdx.x % 32;
+
+	float T0 = T[n * Lx + i];
+	float x0 = x[i];
+
+	float T1, T9;
+	float x1, x9;
+
+	T1 = __shfl_down(T0, 1);
+	T9 = __shfl_up(T0, 1);
+	x1 = __shfl_down(x0, 1);
+	x9 = __shfl_up(x0, 1);
+
+	if(i > 0 and i < (Lx - 1)){
+
+		if(laneID == 0){
+
+			T9 = T[n * Lx + (i - 1)];
+			x9 = x[i - 1];
+
+		} else if (laneID == 31) {
+
+			T1 = T[n * Lx + (i + 1)];
+			x1 = x[i + 1];
+
+		}
+
+		// compute Laplacian
+		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+
+		// compute time-update
+		float Tn = T0 + dt * (kappa * DDx_T0);
+
+		// update global memory
+		T[(n + 1) * Lx + i] = Tn;
+
+	} else {
+		T[(n + 1) * Lx + i] = 0;
+	}
+
+}
+
 __global__ void heat_1d_shared_step(float * T, float * x, uint n){
 
 	// allocate shared memory
@@ -137,8 +195,10 @@ __global__ void heat_1d_shared_step(float * T, float * x, uint n){
 	T_s[threadIdx.x] = T[n * Lx + i];
 	x_s[threadIdx.x] = x[i];
 
+	__syncthreads();
+
 	// domain boundary
-	if(i > 0 and i < Lx - 1){
+	if(i > 0 and i < (Lx - 1)){
 
 		// shared memory stencil boundary
 		if (threadIdx.x > 0 and threadIdx.x < (lx - 1)) {
@@ -175,33 +235,39 @@ __global__ void heat_1d_shared_step(float * T, float * x, uint n){
 __global__ void heat_1d_device_step(float * T, float * x, uint n){
 
 	// Find index from threadId
-	uint i = blockIdx.x * blockDim.x + threadIdx.x + 1;
+	uint i = blockIdx.x * blockDim.x + threadIdx.x;
 
-	// Load stencil
-	float T9 = T[n * Lx + (i - 1)];
-	float T0 = T[n * Lx + (i + 0)];
-	float T1 = T[n * Lx + (i + 1)];
+	if(i > 0 and i < (Lx - 1)){
 
-	// Load position grid
-	float x9 = x[i - 1];
-	float x0 = x[i + 0];
-	float x1 = x[i + 1];
+		// Load stencil
+		float T9 = T[n * Lx + (i - 1)];
+		float T0 = T[n * Lx + (i + 0)];
+		float T1 = T[n * Lx + (i + 1)];
 
-	// compute Laplacian
-	float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+		// Load position grid
+		float x9 = x[i - 1];
+		float x0 = x[i + 0];
+		float x1 = x[i + 1];
 
-	// compute time-update
-	float Tn = T0 + dt * (kappa * DDx_T0);
+		// compute Laplacian
+		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
 
-	// update global memory
-	T[(n + 1) * Lx + i] = Tn;
+		// compute time-update
+		float Tn = T0 + dt * (kappa * DDx_T0);
+
+		// update global memory
+		T[(n + 1) * Lx + i] = Tn;
+
+	} else {
+		T[(n + 1) * Lx + i] = 0;
+	}
 
 	// apply boundary conditions
-	if (i == 1) {
-		T[(n + 1) * Lx + 0] = 0;
-	} else if (i == Lx - 2){
-		T[(n + 1) * Lx + (Lx - 1)] = 0;
-	}
+	//	if (i == 1) {
+	//		T[(n + 1) * Lx + 0] = 0;
+	//	} else if (i == Lx - 2){
+	//		T[(n + 1) * Lx + (Lx - 1)] = 0;
+	//	}
 
 	return;
 

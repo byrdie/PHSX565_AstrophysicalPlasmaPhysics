@@ -74,7 +74,7 @@
 						<toolChain id="com.nvidia.cuda.ide.toolchain.eight_zero.exe.release.383153071" name="CUDA Toolkit 8.0" superClass="com.nvidia.cuda.ide.toolchain.eight_zero.exe.release">
 							<targetPlatform archList="all" binaryParser="com.nvidia.cuda.ide.elf;com.nvidia.cuda.ide.macho;com.nvidia.cuda.ide.cubin" id="com.nvidia.cuda.ide.targetPlatform.381462407" isAbstract="false" name="Debug Platform" osList="linux,macosx" superClass="com.nvidia.cuda.ide.targetPlatform"/>
 							<builder buildPath="${workspace_loc:/heat_parabolic_cuda}/Release" id="com.nvidia.cuda.ide.builder.2026994193" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CUDA Toolkit 8.0 Builder" superClass="com.nvidia.cuda.ide.builder"/>
-							<tool id="nvcc.compiler.base.1325959838" name="NVCC Compiler" superClass="nvcc.compiler.base">
+							<tool command="nvcc -Xptxas -dlcm=ca" id="nvcc.compiler.base.1325959838" name="NVCC Compiler" superClass="nvcc.compiler.base">
 								<option id="nvcc.compiler.deviceDebug.1822349645" name="Generate device debug information (-G)" superClass="nvcc.compiler.deviceDebug"/>
 								<option id="nvcc.compiler.option.level.1000283053" name="Generate host debug information (-g)" superClass="nvcc.compiler.option.level"/>
 								<option defaultValue="nvcc.compiler.optimization.level.most" id="nvcc.compiler.optimization.level.992690238" name="Optimization Level" superClass="nvcc.compiler.optimization.level" valueType="enumerated"/>
@@ -84,6 +84,7 @@
 								<inputType id="nvcc.compiler.input.c.1183175506" superClass="nvcc.compiler.input.c"/>
 							</tool>
 							<tool id="nvcc.linker.base.762796332" name="NVCC Linker" superClass="nvcc.linker.base">
+								<option id="nvcc.linker.option.userobjs.340094384" superClass="nvcc.linker.option.userobjs" valueType="userObjs"/>
 								<inputType id="nvcc.linker.input.1421760338" superClass="nvcc.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -102,6 +103,7 @@
 					<sass major="5" minor="2"/>
 					<ptx major="5" minor="2"/>
 				</executable>
+				<editor-arch major="5" minor="2"/>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
@@ -123,4 +125,6 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
