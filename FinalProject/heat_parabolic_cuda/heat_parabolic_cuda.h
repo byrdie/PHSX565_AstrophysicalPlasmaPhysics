@@ -23,16 +23,16 @@
 void print_device_properties(cudaDeviceProp prop);
 
 void initial_conditions(float * T);
-void initial_grid(float * t, float * x);
+void initial_grid(float * x);
 
-void heat_1d_cpu_solve(float * T, float * t, float * x);
+void heat_1d_cpu_solve(float * T, float * x);
 
-void heat_1d_gpu_solve(float * T, float * t, float * x);
+void heat_1d_gpu_solve(float * T, float * x);
 
 __global__ void heat_1d_device_step(float * T, float * x, uint n);
 __global__ void heat_1d_shared_step(float * T, float * x, uint n);
 __global__ void heat_1d_shfl_step(float * T, float * x, uint n);
 
-void save_results(std::string path, float * T, float * t, float * x);
+void save_results(std::string path, float * T, float * x);
 
 #endif /* HEAT_PARABOLIC_CUDA_H_ */

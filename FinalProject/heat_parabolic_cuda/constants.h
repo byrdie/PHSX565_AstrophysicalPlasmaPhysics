@@ -17,24 +17,27 @@ const uint m_b = 1;
 const uint m = m_b + m_f;
 
 // size of stride + ghost cells
-const uint lx = 1024;
+const uint lx = 32;
 
 // size of strides
 const uint sx = lx - m;
 
 // number of strides
-const uint Nx = 1024;
+const uint Nx = 32;
+
+// downsampling factor
+const uint wt = 32;
+
+// final size after downsampling
+const uint Wt = 32;
 
 // Size of domain in gridpoints (including boundary cells)
-const uint Lt = 16;
+const uint Lt = Wt;
 //const uint Lx = Nx * sx + m;
 const uint Lx = Nx * lx;
 const uint L = Lx * Lt;
 
-// Size of the domain in bytes
-const uint Lt_B = Lt * sizeof(float);
-const uint Lx_B = Lx * sizeof(float);
-const uint L_B = L * sizeof(float);
+
 
 // Specify the size of the domain in physical units
 const float Dx = 1.0;
@@ -46,8 +49,6 @@ const float dx = Dx / (float) Lx;
 const float g = 1.0 / 2.0;	// factor below maximum step size
 const float dt = g * (dx * dx) / (2.0 * kappa);	// CFL condition
 const float Dt = dt * Lt;
-
-
 
 
 

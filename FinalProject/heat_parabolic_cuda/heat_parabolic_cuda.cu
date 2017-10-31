@@ -15,7 +15,6 @@ int main(void)
 	// allocate cpu memory
 	float * T_cpu = new float[L];
 	float * T_gpu = new float[L];
-	float * t = new float[Lt];
 	float * x = new float[Lx];
 
 	// apply initial conditions
@@ -23,22 +22,18 @@ int main(void)
 	initial_conditions(T_gpu);
 
 	// initialize the grid
-	initial_grid(t, x);
+	initial_grid(x);
 
 	// run CPU test
-	heat_1d_cpu_solve(T_cpu, t, x);
+	heat_1d_cpu_solve(T_cpu, x);
 
 	// run GPU test
-	heat_1d_gpu_solve(T_gpu, t, x);
+	heat_1d_gpu_solve(T_gpu, x);
 
 	// calculate rms error
-	bool divergence = false;
 	float rms = 0.0;
 	for(uint l = 0; l < L; l++) {
 		rms += (T_cpu[l] - T_gpu[l]) * (T_cpu[l] - T_gpu[l]);
-		//		if(std::abs(T_cpu[l] - T_gpu[l]) > 1e-5){
-		//			divergence = true;
-		//		}
 	}
 	rms = std::sqrt(rms / (float) L);
 	printf("CPU-GPU RMS error = %e \n", rms);
@@ -54,7 +49,7 @@ int main(void)
 	return 0;
 }
 
-void heat_1d_gpu_solve(float * T, float * t, float * x){
+void heat_1d_gpu_solve(float * T, float * x){
 
 	// Set up device
 	int dev = 0;
@@ -65,73 +60,117 @@ void heat_1d_gpu_solve(float * T, float * t, float * x){
 	CHECK(cudaGetDeviceProperties(&prop, 0));
 	//		print_device_properties(prop);
 
-	// configure then amount of shared memory
+	// configure the device to have the largest possible L1 cache
 	CHECK(cudaDeviceSetCacheConfig(cudaFuncCachePreferL1));
 
 	// allocate pinned host memory
 	float *T_h;						// dependent variables
-	float *t_h , *x_h;	// independent variables
-	CHECK(cudaMallocHost((float **) &T_h, L_B));
-	CHECK(cudaMallocHost((float **) &t_h, Lt_B));
-	CHECK(cudaMallocHost((float **) &x_h, Lx_B));
+	float *x_h;	// independent variables
+	CHECK(cudaMallocHost((float **) &T_h, L * sizeof(float)));
+	CHECK(cudaMallocHost((float **) &x_h, Lx * sizeof(float)));
 
 	// allocate device memory
 	float *T_d;						// dependent variables
-	float *t_d , *x_d;	// independent variables
-	CHECK(cudaMalloc((float **) &T_d, L_B));
-	CHECK(cudaMalloc((float **) &t_d, Lt_B));
-	CHECK(cudaMalloc((float **) &x_d, Lx_B));
+	float *x_d;	// independent variables
+	CHECK(cudaMalloc((float **) &T_d, L * sizeof(float)));
+	CHECK(cudaMalloc((float **) &x_d, Lx * sizeof(float)));
 
-	// transfer data from argument to pinned memory
-	CHECK(cudaMemcpy(T_h, T, L_B, cudaMemcpyHostToHost));
-	CHECK(cudaMemcpy(t_h, t, Lt_B, cudaMemcpyHostToHost));
-	CHECK(cudaMemcpy(x_h, x, Lx_B, cudaMemcpyHostToHost));
+	// transfer initial condition from argument to pinned host memory
+	CHECK(cudaMemcpy(T_h, T, Lx * sizeof(float), cudaMemcpyHostToHost));
+	CHECK(cudaMemcpy(x_h, x, Lx * sizeof(float), cudaMemcpyHostToHost));
 
 	// transfer data from the host to the device
-	CHECK(cudaMemcpy(T_d, T_h, L_B, cudaMemcpyHostToDevice));
-	CHECK(cudaMemcpy(t_d, t_h, Lt_B, cudaMemcpyHostToDevice));
-	CHECK(cudaMemcpy(x_d, x_h, Lx_B, cudaMemcpyHostToDevice));
+	CHECK(cudaMemcpy(T_d, T_h, Lx * sizeof(float), cudaMemcpyHostToDevice));
+	CHECK(cudaMemcpy(x_d, x_h, Lx * sizeof(float), cudaMemcpyHostToDevice));
 
+	// set the number of threads and blocks
+	const uint threads = lx;
+	const uint blocks = Nx;
+
+	// set the amount of shared memory
+	const uint shared = 0;
+
+	// initialize streams
+	cudaStream_t k_stream, m_stream;
+	cudaStreamCreate(&k_stream);	// initialize computation stream
+	cudaStreamCreate(&m_stream);	// initialize memory stream
+
+	// initialize timing events
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
 
 	// main time-marching loop
-	for(uint n = 0; n < Lt-1; n++){
+	for(uint ti = 1; ti < Wt; ti++){	// downsampled resolution
 
-				const uint threads = lx;
-				const uint blocks = Nx;
-				heat_1d_device_step<<<blocks, threads>>>(T_d, x_d, n);
+		// check if memory transfer is completed
+		cudaStreamSynchronize(m_stream);
 
-		//		const uint threads = lx;
-		//		const uint blocks = Nx;
-		//		heat_1d_shared_step<<<blocks, threads>>>(T_d, x_d, n);
+		for(uint tj = 0; tj < wt; tj++){	// original resolution
 
-//		const uint threads = lx;
-//		const uint blocks = Nx;
-//		heat_1d_shfl_step<<<blocks, threads>>>(T_d, x_d, n);
+			// perform timestep
+			heat_1d_device_step<<<blocks, threads, shared, k_stream>>>(T_d, x_d, tj);
+			cudaStreamSynchronize(k_stream);
 
-		cudaDeviceSynchronize();
+			// start memory transfer
+			if(tj == 0){
+				cudaMemcpyAsync(T_h + (ti * Lx), T_d, Lx * sizeof(float), cudaMemcpyDeviceToHost, m_stream);
+			}
+
+
+		}
+
+
 
 	}
+
 
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	cudaEventElapsedTime(&gpu_time, start, stop);
 	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
-	// transfer data from the host to the device
-	CHECK(cudaMemcpy(T_h, T_d, L_B, cudaMemcpyDeviceToHost));
-	CHECK(cudaMemcpy(t_h, t_d, Lt_B, cudaMemcpyDeviceToHost));
-	CHECK(cudaMemcpy(x_h, x_d, Lx_B, cudaMemcpyDeviceToHost));
 
 	// copy to original argument pointers
-	CHECK(cudaMemcpy(T, T_h, L_B, cudaMemcpyHostToHost));
-	CHECK(cudaMemcpy(t, t_h, Lt_B, cudaMemcpyHostToHost));
-	CHECK(cudaMemcpy(x, x_h, Lx_B, cudaMemcpyHostToHost));
+	CHECK(cudaMemcpy(T, T_h, Wt * Lx * sizeof(float), cudaMemcpyHostToHost));
 
-	save_results("gpu/", T, t, x);
+	save_results("gpu/", T, x);
+
+}
+
+__global__ void heat_1d_device_step(float * T, float * x, uint n){
+
+	// Find index from threadId
+	uint i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if(i > 0 and i < (Lx - 1)){
+
+		// Load stencil
+		float T9 = T[n * Lx + (i - 1)];
+		float T0 = T[n * Lx + (i + 0)];
+		float T1 = T[n * Lx + (i + 1)];
+
+		// Load position grid
+		float x9 = x[i - 1];
+		float x0 = x[i + 0];
+		float x1 = x[i + 1];
+
+		// compute Laplacian
+		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+
+		// compute time-update
+		float Tn = T0 + dt * (kappa * DDx_T0);
+
+		// update global memory
+		T[((n + 1) % wt) * Lx + i] = Tn;
+
+	} else {
+		T[((n + 1) % wt) * Lx + i] = 0;
+	}
+
+
+	return;
 
 }
 
@@ -232,81 +271,67 @@ __global__ void heat_1d_shared_step(float * T, float * x, uint n){
 
 }
 
-__global__ void heat_1d_device_step(float * T, float * x, uint n){
-
-	// Find index from threadId
-	uint i = blockIdx.x * blockDim.x + threadIdx.x;
-
-	if(i > 0 and i < (Lx - 1)){
-
-		// Load stencil
-		float T9 = T[n * Lx + (i - 1)];
-		float T0 = T[n * Lx + (i + 0)];
-		float T1 = T[n * Lx + (i + 1)];
-
-		// Load position grid
-		float x9 = x[i - 1];
-		float x0 = x[i + 0];
-		float x1 = x[i + 1];
-
-		// compute Laplacian
-		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
-
-		// compute time-update
-		float Tn = T0 + dt * (kappa * DDx_T0);
-
-		// update global memory
-		T[(n + 1) * Lx + i] = Tn;
-
-	} else {
-		T[(n + 1) * Lx + i] = 0;
-	}
-
-	// apply boundary conditions
-	//	if (i == 1) {
-	//		T[(n + 1) * Lx + 0] = 0;
-	//	} else if (i == Lx - 2){
-	//		T[(n + 1) * Lx + (Lx - 1)] = 0;
-	//	}
-
-	return;
-
-}
 
 
 
-void heat_1d_cpu_solve(float * T, float * t, float * x){
+
+void heat_1d_cpu_solve(float * T, float * x){
 
 	struct timeval t1, t2;
 	gettimeofday(&t1, 0);
 
-	for(uint n = 0; n < Lt-1; n++){
+	float * T_d = new float[wt * Lx];
+	memcpy(T_d, T, Lx * sizeof(float));
 
-		for(uint i = 0; i < Lx; i++){
+	// main time-marching loop
+	for(uint ti = 1; ti < Wt; ti++){	// downsampled resolution
 
-			if(i != 0 and i != Lx - 1){
+		for(uint tj = 0; tj < wt; tj++){	// original resolution
 
-				// Load stencil
-				float T9 = T[n * Lx + (i - 1)];
-				float T0 = T[n * Lx + (i + 0)];
-				float T1 = T[n * Lx + (i + 1)];
+			// perform timestep
+			for(uint i = 0; i < Lx; i++){
 
-				// Load position grid
-				float x9 = x[i - 1];
-				float x0 = x[i + 0];
-				float x1 = x[i + 1];;
+				if(i != 0 and i != Lx - 1){
 
-				// compute second derivative
-				float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+					// Load stencil
+					float T9 = T_d[tj * Lx + (i - 1)];
+					float T0 = T_d[tj * Lx + (i + 0)];
+					float T1 = T_d[tj * Lx + (i + 1)];
 
-				// compute time-update
-				float Tn = T0 + dt * (kappa * DDx_T0);
+					// Load position grid
+					float x9 = x[i - 1];
+					float x0 = x[i + 0];
+					float x1 = x[i + 1];;
 
-				// update global memory
-				T[(n + 1) * Lx + i] = Tn;
-			} else {	// boundary condition
-				T[(n + 1) * Lx + i] = 0;
+					// compute second derivative
+					float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+
+					// compute time-update
+					float Tn = T0 + dt * (kappa * DDx_T0);
+
+					// update global memory
+					T_d[((tj + 1) % wt) * Lx + i] = Tn;
+
+					if(tj == 0) {
+						T[ti * Lx + i] = Tn;
+					}
+
+				} else {	// boundary condition
+
+					T_d[((tj + 1) % wt) * Lx + i] = 0;
+
+					if(tj == 0) {
+						T[ti * Lx + i] = 0;
+					}
+
+				}
+
 			}
+
+//			// downsample operation
+//			if(tj == 0){
+//				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
+//			}
 
 		}
 
@@ -316,7 +341,7 @@ void heat_1d_cpu_solve(float * T, float * t, float * x){
 	cpu_time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
 	printf("cpu:  %f ms\n", cpu_time);
 
-	save_results("cpu/", T, t, x);
+	save_results("cpu/", T, x);
 
 	return;
 
@@ -341,19 +366,17 @@ void initial_conditions(float * T){
 
 }
 
-void initial_grid(float * t, float * x){
+void initial_grid(float * x){
 
-	for(int n = 0; n < Lt; n++) t[n] = n * dt;	// initialize rectangular grid in t
 	for(int i = 0; i < Lx; i++) x[i] = i * dx;	// initialize rectangular grid in x
 
 }
 
-void save_results(std::string path, float * T, float * t, float * x){
+void save_results(std::string path, float * T,  float * x){
 
 	// open files
 	FILE * meta_f = fopen(("output/" + path + "meta.dat").c_str(), "wb");
 	FILE * T_f = fopen(("output/" + path + "T.dat").c_str(), "wb");
-	FILE * t_f = fopen(("output/" + path + "t.dat").c_str(), "wb");
 	FILE * x_f = fopen(("output/" + path + "x.dat").c_str(), "wb");
 
 	// save state variables
@@ -362,13 +385,11 @@ void save_results(std::string path, float * T, float * t, float * x){
 
 	// write data
 	fwrite(T, sizeof(float), L, T_f);
-	fwrite(t, sizeof(float), Lt, t_f);
 	fwrite(x, sizeof(float), Lx, x_f);
 
 	// close files
 	fclose(meta_f);
 	fclose(T_f);
-	fclose(t_f);
 	fclose(x_f);
 
 
