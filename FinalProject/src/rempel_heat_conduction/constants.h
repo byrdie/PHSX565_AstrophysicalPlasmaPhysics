@@ -8,28 +8,32 @@
 #ifndef CONSTANTS_C_
 #define CONSTANTS_C_
 
+
+
+// boundary conditions
+const float T_left = 0.1;
+const float T_right = 1.0;
+
 // define physical constants
-const float kappa = 1.0;
+const float kappa_max = T_right;
+
 
 // specify the order of the differentiation in each direction
 const uint m_f = 1;
 const uint m_b = 1;
 const uint m = m_b + m_f;
 
-// size of stride + ghost cells
-const uint lx = 1024;
-
-// size of strides
-const uint sx = lx - m;
+// size of stride
+const uint lx = 32;
 
 // number of strides
-const uint Nx = 1024;
+const uint Nx = 32;
 
 // downsampling factor
 const uint wt = 32;
 
 // final size after downsampling
-const uint Wt = 32;
+const uint Wt = 128;
 
 // Size of domain in gridpoints (including boundary cells)
 const uint Lt = Wt;
@@ -45,10 +49,15 @@ const float Dx = 1.0;
 // Calculate the spatial step size
 const float dx = Dx / (float) Lx;
 
-// calculate the temporal step size
-const float g = 1.0 / 2.0;	// factor below maximum step size
-const float dt = g * (dx * dx) / (2.0 * kappa);	// CFL condition
-const float Dt = dt * Lt;
+// calculate the parabolic step size
+const float f_CFL = 1.0 / 2.0;	// factor below maximum step size
+const float dt_p = f_CFL * (dx * dx) / (2.0 * kappa_max);	// CFL condition
+
+// calculate the hyperbolic step size
+const float dt_h = 100.0 * dt_p;
+
+// calculate hyperbolic propagation speed
+const float c_h = f_CFL * dx / dt_h;
 
 
 

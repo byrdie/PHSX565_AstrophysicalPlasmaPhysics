@@ -4,8 +4,8 @@
 
 
 // define variables for measuring performance
-float cpu_time = 0.0;
-float gpu_time = 0.0;
+//float cpu_time = 0.0;
+//float gpu_time = 0.0;
 
 int main(void)
 {
@@ -25,10 +25,13 @@ int main(void)
 	initial_grid(x);
 
 	// run CPU test
-	heat_1d_cpu_solve(T_cpu, x);
+	float cpu_time = 0;
+	cpu_time = heat_1d_cpu_solve(T_cpu, x, false);
+	printf("cpu:  %f ms\n", cpu_time);
 
 	// run GPU test
-	heat_1d_gpu_solve(T_gpu, x);
+	float gpu_time = heat_1d_gpu_solve(T_gpu, x, false);
+	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
 	// calculate rms error
 	float rms = 0.0;
@@ -44,15 +47,15 @@ int main(void)
 	return 0;
 }
 
-void heat_1d_gpu_solve(float * T, float * x){
+float heat_1d_gpu_solve(float * T, float * x, bool fickian){
 
 	// Set up device
 	int dev = 0;
 	CHECK(cudaSetDevice(dev));
 
 	// Print device and precision
-//	cudaDeviceProp prop;
-//	CHECK(cudaGetDeviceProperties(&prop, 0));
+	//	cudaDeviceProp prop;
+	//	CHECK(cudaGetDeviceProperties(&prop, 0));
 	//		print_device_properties(prop);
 
 	// configure the device to have the largest possible L1 cache
@@ -91,6 +94,7 @@ void heat_1d_gpu_solve(float * T, float * x){
 	cudaStreamCreate(&m_stream);	// initialize memory stream
 
 	// initialize timing events
+	float gpu_time;
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
@@ -108,7 +112,7 @@ void heat_1d_gpu_solve(float * T, float * x){
 			}
 
 			// perform timestep
-			heat_1d_device_step<<<blocks, threads, shared, k_stream>>>(T_d, x_d, tj);
+			heat_1d_gpu_parabolic_step<<<blocks, threads, shared, k_stream>>>(T_d, x_d, tj);
 			cudaStreamSynchronize(k_stream);
 
 
@@ -120,7 +124,6 @@ void heat_1d_gpu_solve(float * T, float * x){
 	cudaEventRecord(stop);
 	cudaEventSynchronize(stop);
 	cudaEventElapsedTime(&gpu_time, start, stop);
-	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
 
 	// copy to original argument pointers
@@ -128,9 +131,11 @@ void heat_1d_gpu_solve(float * T, float * x){
 
 	save_results("gpu/", T, x);
 
+	return gpu_time;
+
 }
 
-__global__ void heat_1d_device_step(float * T, float * x, uint n){
+__global__ void heat_1d_gpu_parabolic_step(float * T, float * x, uint n){
 
 	// Find index from threadId
 	uint i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -151,13 +156,15 @@ __global__ void heat_1d_device_step(float * T, float * x, uint n){
 		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
 
 		// compute time-update
-		float Tn = T0 + dt * (kappa * DDx_T0);
+		float Tn = T0 + dt_p * (T0 * T0 * sqrt(T0) * DDx_T0);
 
 		// update global memory
 		T[((n + 1) % wt) * Lx + i] = Tn;
 
+	} else if(i == 0){
+		T[((n + 1) % wt) * Lx + i] = T_left;
 	} else {
-		T[((n + 1) % wt) * Lx + i] = 0;
+		T[((n + 1) % wt) * Lx + i] = T_right;
 	}
 
 
@@ -165,8 +172,9 @@ __global__ void heat_1d_device_step(float * T, float * x, uint n){
 
 }
 
-void heat_1d_cpu_solve(float * T, float * x){
+float heat_1d_cpu_solve(float * T, float * x, bool fickian){
 
+	float cpu_time;
 	struct timeval t1, t2;
 	gettimeofday(&t1, 0);
 
@@ -178,44 +186,10 @@ void heat_1d_cpu_solve(float * T, float * x){
 
 		for(uint tj = 0; tj < wt; tj++){	// original resolution
 
-			// perform timestep
-			for(uint i = 0; i < Lx; i++){
-
-				// save downsampled data to solution
-				if(tj == 0 and ti > 0) {
-					T[ti * Lx + i] = T_d[tj * Lx + i];
-				}
-
-				if(i > 0 and i < Lx - 1){
-
-					// Load stencil
-					float T9 = T_d[tj * Lx + (i - 1)];
-					float T0 = T_d[tj * Lx + (i + 0)];
-					float T1 = T_d[tj * Lx + (i + 1)];
-
-					// Load position grid
-					float x9 = x[i - 1];
-					float x0 = x[i + 0];
-					float x1 = x[i + 1];;
-
-					// compute second derivative
-					float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
-
-					// compute time-update
-					float Tn = T0 + dt * (kappa * DDx_T0);
-
-					// update global memory
-					T_d[((tj + 1) % wt) * Lx + i] = Tn;
-
-				} else {	// boundary condition
-
-					T_d[((tj + 1) % wt) * Lx + i] = 0;
-
-				}
-
-
-
+			if(tj == 0 and ti > 0) {
+				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
 			}
+			heat_1d_cpu_hyperbolic_step(T, T_d, x, tj);
 
 		}
 
@@ -223,11 +197,92 @@ void heat_1d_cpu_solve(float * T, float * x){
 
 	gettimeofday(&t2, 0);
 	cpu_time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
-	printf("cpu:  %f ms\n", cpu_time);
+
 
 	save_results("cpu/", T, x);
 
-	return;
+	return cpu_time;
+
+}
+
+void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * x, uint n){
+
+	// perform timestep
+	for(uint i = 0; i < Lx; i++){
+
+		if(i > 0 and i < Lx - 1){
+
+			// Load stencil
+			float T9 = T_d[n * Lx + (i - 1)];
+			float T0 = T_d[n * Lx + (i + 0)];
+			float T1 = T_d[n * Lx + (i + 1)];
+			float Tz = T_d[((n - 1) % wt) * Lx + i];
+
+			// Load position grid
+			float x9 = x[i - 1];
+			float x0 = x[i + 0];
+			float x1 = x[i + 1];
+
+			float c2 = c_h * c_h;
+
+			// compute hyperbolic timescale
+			float tau = (T0 * T0 * sqrt(T0)) / c2;
+
+			float dx2 = ((x1 - x0) * (x0 - x9));
+
+			// compute time-update
+			float Ta = (Tz * dx2 * (dt_h - 2 * tau) + 2 * (c2 * (T9 - 2 * T0 + T1) * dt_h * dt_h + 2 * T0 * dx2) * tau) / (dx2 * (dt_h + 2 * tau));
+
+			// update global memory
+			T_d[((n + 1) % wt) * Lx + i] = Ta;
+
+		} else if(i == 0){
+			T_d[((n + 1) % wt) * Lx + i] = T_left;
+		} else {
+			T_d[((n + 1) % wt) * Lx + i] = T_right;
+		}
+
+
+
+	}
+
+}
+
+void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * x, uint n){
+
+	// perform timestep
+	for(uint i = 0; i < Lx; i++){
+
+		if(i > 0 and i < Lx - 1){
+
+			// Load stencil
+			float T9 = T_d[n * Lx + (i - 1)];
+			float T0 = T_d[n * Lx + (i + 0)];
+			float T1 = T_d[n * Lx + (i + 1)];
+
+			// Load position grid
+			float x9 = x[i - 1];
+			float x0 = x[i + 0];
+			float x1 = x[i + 1];;
+
+			// compute second derivative
+			float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
+
+			// compute time-update
+			float Tn = T0 + dt_p * (T0 * T0 * sqrt(T0) * DDx_T0);
+
+			// update global memory
+			T_d[((n + 1) % wt) * Lx + i] = Tn;
+
+		} else if(i == 0){
+			T_d[((n + 1) % wt) * Lx + i] = T_left;
+		} else {
+			T_d[((n + 1) % wt) * Lx + i] = T_right;
+		}
+
+
+
+	}
 
 }
 
@@ -240,7 +295,7 @@ void initial_conditions(float * T){
 
 		// Initialize temperature as rectangle function
 		if(x > 0.4f and x < 0.6f){
-			T[n * Lx + i] = 10.0f;
+			T[n * Lx + i] = 1.0f;
 		} else {
 			T[n * Lx + i] = 1.0f;
 		}
