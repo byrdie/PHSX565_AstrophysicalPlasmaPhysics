@@ -22,7 +22,7 @@
 
 
 
-void initial_conditions(float * T);
+void initial_conditions(float * T, float * x);
 void initial_grid(float * x);
 
 float heat_1d_cpu_solve(float * T, float * x, bool fickian);

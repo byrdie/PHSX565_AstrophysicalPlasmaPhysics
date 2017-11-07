@@ -17,12 +17,14 @@ int main(void)
 	float * T_gpu = new float[L];
 	float * x = new float[Lx];
 
-	// apply initial conditions
-	initial_conditions(T_cpu);
-	initial_conditions(T_gpu);
-
 	// initialize the grid
 	initial_grid(x);
+
+	// apply initial conditions
+	initial_conditions(T_cpu, x);
+	initial_conditions(T_gpu, x);
+
+
 
 	// run CPU test
 	float cpu_time = 0;
@@ -226,12 +228,20 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * x, uint n){
 			float c2 = c_h * c_h;
 
 			// compute hyperbolic timescale
-			float tau = (T0 * T0 * sqrt(T0)) / c2;
+//			float tau = (T0 * T0 * sqrt(T0)) / c2;
+//			float tau = (T0 * T0) / c2;
+			float tau = 1/c2;
 
 			float dx2 = ((x1 - x0) * (x0 - x9));
+//			float dx2 = dx * dx;
+
+			float dt = dt_h;
+			float dt2 = dt * dt;
 
 			// compute time-update
-			float Ta = (Tz * dx2 * (dt_h - 2 * tau) + 2 * (c2 * (T9 - 2 * T0 + T1) * dt_h * dt_h + 2 * T0 * dx2) * tau) / (dx2 * (dt_h + 2 * tau));
+//			float Ta = (Tz * dx2 * (dt - 2 * tau) + 2 * (c2 * (T9 - 2 * T0 + T1) * dt2 + 2 * T0 * dx2) * tau) / (dx2 * (dt + 2 * tau));
+
+			float Ta = (T0 * dt * dx2 + c2 * (T1 - 2 * T0 + T9) * dt2 * tau + (2 * T0 - Tz) * dx2 * tau) / (dx2 * (dt + tau));
 
 			// update global memory
 			T_d[((n + 1) % wt) * Lx + i] = Ta;
@@ -242,6 +252,9 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * x, uint n){
 			T_d[((n + 1) % wt) * Lx + i] = T_right;
 		}
 
+		if(i > 1012){
+			printf("%04d %04d %f\n", n,i, T_d[((n + 1) % wt) * Lx + i]);
+		}
 
 
 	}
@@ -286,21 +299,24 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * x, uint n){
 
 }
 
-void initial_conditions(float * T){
+void initial_conditions(float * T, float * x){
 
 	// initialize host memory
-	int n = 0;
-	for(int i = 0; i < Lx; i++){		// Initial condition for dependent variable
-		float x = i * dx;
+	for(int n = wt - 1; n < wt + 1; n++){
+		printf("%d\n",n);
+		for(int i = 0; i < Lx; i++){		// Initial condition for dependent variable
 
-		// Initialize temperature as rectangle function
-		if(x > 0.4f and x < 0.6f){
-			T[n * Lx + i] = 1.0f;
-		} else {
-			T[n * Lx + i] = 1.0f;
+			// Initialize temperature as rectangle function
+//			if(x[] > 0.4f and x < 0.6f){
+//				T[(n % wt) * Lx + i] = 1.0f;
+//			} else {
+//				T[(n % wt) * Lx + i] = 1.0f;
+//			}
+//
+			T[(n % wt) * Lx + i] = 0.1 + 0.9 * pow(x[i],5);
+
+//			T[(n % wt) * Lx + i] = pow(pow(0.1,3.5) + (1 - pow(0.1,3.5)) * x[i], 2 / 7);
 		}
-
-
 	}
 
 }
