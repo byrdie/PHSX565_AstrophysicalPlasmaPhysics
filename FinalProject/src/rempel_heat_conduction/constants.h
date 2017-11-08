@@ -33,7 +33,7 @@ const uint Nx = 32;
 const uint wt = 2;
 
 // final size after downsampling
-const uint Wt = 4;
+const uint Wt = 128 * 1024;
 
 // Size of domain in gridpoints (including boundary cells)
 const uint Lt = Wt;
@@ -54,7 +54,7 @@ const float f_CFL = 1.0 / 4.0;	// factor below maximum step size
 const float dt_p = f_CFL * (dx * dx) / (2.0 * kappa_max);	// CFL condition
 
 // calculate the hyperbolic step size
-const float dt_h =  1e-1 * dt_p;
+const float dt_h =  0.001 * dt_p;
 
 // calculate hyperbolic propagation speed
 const float c_h = f_CFL * dx / dt_h;

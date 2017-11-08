@@ -15,24 +15,26 @@ int main(void)
 	// allocate cpu memory
 	float * T_cpu = new float[L];
 	float * T_gpu = new float[L];
+	float * q_cpu = new float[L];
+	float * q_gpu = new float[L];
 	float * x = new float[Lx];
 
 	// initialize the grid
 	initial_grid(x);
 
 	// apply initial conditions
-	initial_conditions(T_cpu, x);
-	initial_conditions(T_gpu, x);
+	initial_conditions(T_cpu, q_cpu, x);
+	initial_conditions(T_gpu, q_gpu, x);
 
 
 
 	// run CPU test
 	float cpu_time = 0;
-	cpu_time = heat_1d_cpu_solve(T_cpu, x, false);
+	cpu_time = heat_1d_cpu_solve(T_cpu, q_cpu, x, false);
 	printf("cpu:  %f ms\n", cpu_time);
 
 	// run GPU test
-	float gpu_time = heat_1d_gpu_solve(T_gpu, x, false);
+	float gpu_time = heat_1d_gpu_solve(T_gpu, q_gpu,  x, false);
 	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
 	// calculate rms error
@@ -49,7 +51,7 @@ int main(void)
 	return 0;
 }
 
-float heat_1d_gpu_solve(float * T, float * x, bool fickian){
+float heat_1d_gpu_solve(float * T, float * q, float * x,  bool fickian){
 
 	// Set up device
 	int dev = 0;
@@ -158,7 +160,8 @@ __global__ void heat_1d_gpu_parabolic_step(float * T, float * x, uint n){
 		float DDx_T0 = (T9 - 2 * T0 + T1) / ((x1 - x0) * (x0 - x9));
 
 		// compute time-update
-		float Tn = T0 + dt_p * (T0 * T0 * sqrt(T0) * DDx_T0);
+		//		float Tn = T0 + dt_p * (T0 * T0 * sqrt(T0) * DDx_T0);
+		float Tn = T0 + dt_p * (DDx_T0);
 
 		// update global memory
 		T[((n + 1) % wt) * Lx + i] = Tn;
@@ -174,14 +177,17 @@ __global__ void heat_1d_gpu_parabolic_step(float * T, float * x, uint n){
 
 }
 
-float heat_1d_cpu_solve(float * T, float * x, bool fickian){
+float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian){
 
 	float cpu_time;
 	struct timeval t1, t2;
 	gettimeofday(&t1, 0);
 
 	float * T_d = new float[wt * Lx];
+	float * q_d = new float[wt * Lx];
 	memcpy(T_d, T, Lx * sizeof(float));
+	memcpy(T_d + (wt - 1) * Lx, T + (wt - 1) * Lx, Lx * sizeof(float)); // Copy the end of the array since it also contains initial condition
+	memcpy(q_d, q, Lx * sizeof(float));
 
 	// main time-marching loop
 	for(uint ti = 0; ti < Wt; ti++){	// downsampled resolution
@@ -190,8 +196,9 @@ float heat_1d_cpu_solve(float * T, float * x, bool fickian){
 
 			if(tj == 0 and ti > 0) {
 				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
+				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
 			}
-			heat_1d_cpu_hyperbolic_step(T, T_d, x, tj);
+			heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
 
 		}
 
@@ -207,58 +214,74 @@ float heat_1d_cpu_solve(float * T, float * x, bool fickian){
 
 }
 
-void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * x, uint n){
+void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, uint n){
+
 
 	// perform timestep
-	for(uint i = 0; i < Lx; i++){
+	uint i;
+	for(i = 1; i < Lx - 1; i++){
 
-		if(i > 0 and i < Lx - 1){
+		// Load stencil
+		float T9 = T_d[n * Lx + (i - 1)];
+		float T0 = T_d[n * Lx + (i + 0)];
+		float T1 = T_d[n * Lx + (i + 1)];
+		float Tz = T_d[((n - 1) % wt) * Lx + i];
+		//			printf("%f\n", Tz);
 
-			// Load stencil
-			float T9 = T_d[n * Lx + (i - 1)];
-			float T0 = T_d[n * Lx + (i + 0)];
-			float T1 = T_d[n * Lx + (i + 1)];
-			float Tz = T_d[((n - 1) % wt) * Lx + i];
+		float q9 = q[n * Lx + (i - 1)];
+		float q0 = q[n * Lx + (i + 0)];
+		float q1 = q[n * Lx + (i + 1)];
 
-			// Load position grid
-			float x9 = x[i - 1];
-			float x0 = x[i + 0];
-			float x1 = x[i + 1];
+		// Load position grid
+		float x9 = x[i - 1];
+		float x0 = x[i + 0];
+		float x1 = x[i + 1];
 
-			float c2 = c_h * c_h;
+		float c2 = c_h * c_h;
 
-			// compute hyperbolic timescale
-//			float tau = (T0 * T0 * sqrt(T0)) / c2;
-//			float tau = (T0 * T0) / c2;
-			float tau = 1/c2;
+//		 compute hyperbolic timescale
+//		float tau = (T0 * T0 * sqrt(T0)) / c2;
+		//			float tau = (T0 * T0) / c2;
+					float tau = 1 /c2;
 
-			float dx2 = ((x1 - x0) * (x0 - x9));
-//			float dx2 = dx * dx;
+		float dx2 = ((x1 - x0) * (x0 - x9));
+		//			float dx2 = dx * dx;
 
-			float dt = dt_h;
-			float dt2 = dt * dt;
+		float dt = dt_h;
+		float dt2 = dt * dt;
 
-			// compute time-update
-//			float Ta = (Tz * dx2 * (dt - 2 * tau) + 2 * (c2 * (T9 - 2 * T0 + T1) * dt2 + 2 * T0 * dx2) * tau) / (dx2 * (dt + 2 * tau));
+		float qa = -((c2 * (T1 - T0) *  dt) / (x1 - x0)) - ((q0 * (-dt + tau)) / (tau));
+		q[((n + 1) % wt) * Lx + i] = qa;
 
-			float Ta = (T0 * dt * dx2 + c2 * (T1 - 2 * T0 + T9) * dt2 * tau + (2 * T0 - Tz) * dx2 * tau) / (dx2 * (dt + tau));
 
-			// update global memory
-			T_d[((n + 1) % wt) * Lx + i] = Ta;
+		float Ta = T0 - ((q0 - q9) * dt / (x0 - x9));
+//		float Ta = T0 - ((q1 - q0) * dt / (x1 - x0));
 
-		} else if(i == 0){
-			T_d[((n + 1) % wt) * Lx + i] = T_left;
-		} else {
-			T_d[((n + 1) % wt) * Lx + i] = T_right;
-		}
+		// compute time-update
+		//			float Ta = (Tz * dx2 * (dt - 2 * tau) + 2 * (c2 * (T9 - 2 * T0 + T1) * dt2 + 2 * T0 * dx2) * tau) / (dx2 * (dt + 2 * tau));
+		//			float Ta = (T0 * dt * dx2 + c2 * (T1 - 2 * T0 + T9) * dt2 * tau + (2 * T0 - Tz) * dx2 * tau) / (dx2 * (dt + tau));
 
-		if(i > 1012){
-			printf("%04d %04d %f\n", n,i, T_d[((n + 1) % wt) * Lx + i]);
-		}
+		// update global memory
+		T_d[((n + 1) % wt) * Lx + i] = Ta;
+
+
+		//		if(i > 1012){
+		//			printf("%04d %04d %f\n", n,i, T_d[((n + 1) % wt) * Lx + i]);
+		//		}
 
 
 	}
 
+	// apply left boundary conditions
+	i = 0;
+	T_d[((n + 1) % wt) * Lx + i] = T_left;
+	q[((n + 1) % wt) * Lx + i] = q[((n + 1) % wt) * Lx + (i + 1)] - (q[((n + 1) % wt) * Lx + (i + 2)] - q[((n + 1) % wt) * Lx + (i + 1)]) / dx;
+
+	// apply right boundary conditions
+	i = Lx - 1;
+	T_d[((n + 1) % wt) * Lx + i] = T_right;
+	q[((n + 1) % wt) * Lx + i] = q[((n + 1) % wt) * Lx + (i - 1)] + (q[((n + 1) % wt) * Lx + (i - 1)] - q[((n + 1) % wt) * Lx + (i - 2)]) / dx;;
+//	q[((n + 1) % wt) * Lx + i] = 0;
 }
 
 void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * x, uint n){
@@ -299,25 +322,42 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * x, uint n){
 
 }
 
-void initial_conditions(float * T, float * x){
+void initial_conditions(float * T, float * q, float * x){
+
+	int n = 0;
 
 	// initialize host memory
-	for(int n = wt - 1; n < wt + 1; n++){
+//	for(int n = 0; n < wt + 1; n++){
 		printf("%d\n",n);
 		for(int i = 0; i < Lx; i++){		// Initial condition for dependent variable
 
 			// Initialize temperature as rectangle function
-//			if(x[] > 0.4f and x < 0.6f){
-//				T[(n % wt) * Lx + i] = 1.0f;
-//			} else {
-//				T[(n % wt) * Lx + i] = 1.0f;
+			//			if(x[] > 0.4f and x < 0.6f){
+			//				T[(n % wt) * Lx + i] = 1.0f;
+			//			} else {
+			//				T[(n % wt) * Lx + i] = 1.0f;
+			//			}
+
+//			if(n == (wt)){
+//				q[(n % wt) * Lx + i] = 0;
 //			}
-//
+
+			//
 			T[(n % wt) * Lx + i] = 0.1 + 0.9 * pow(x[i],5);
 
-//			T[(n % wt) * Lx + i] = pow(pow(0.1,3.5) + (1 - pow(0.1,3.5)) * x[i], 2 / 7);
+			if(i > 0){
+				q[n * Lx + (i - 1)] =  - (T[n * Lx + i] - T[n * Lx + (i - 1)] ) / dx;
+			}
+			if(i == Lx - 1){
+				q[n * Lx + i] = q[n * Lx + (i - 1)];
+			}
+//			q[n * Lx + i] = 0;
+
+
+			//			T[(n % wt) * Lx + i] = pow(pow(0.1,3.5) + (1 - pow(0.1,3.5)) * x[i], 2 / 7);
 		}
-	}
+
+//	}
 
 }
 
