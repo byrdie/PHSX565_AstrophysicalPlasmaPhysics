@@ -27,13 +27,13 @@ void initial_grid(float * x);
 
 float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian);
 
-void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * x, uint n);
+void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, uint n);
 void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, uint n);
 
 float heat_1d_gpu_solve(float * T, float * q, float * x, bool fickian);
 
-__global__ void heat_1d_gpu_parabolic_step(float * T, float * x, uint n);
-__global__ void heat_1d_gpu_hyperbolic_step(float * T, float * x, uint n);
+__global__ void heat_1d_gpu_parabolic_step(float * T, float * q, float * x, uint n);
+__global__ void heat_1d_gpu_hyperbolic_step(float * T, float * q, float * x, uint n);
 
 void save_results(std::string path, float * T, float * x);
 

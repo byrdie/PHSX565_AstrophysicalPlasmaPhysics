@@ -8,14 +8,14 @@
 #ifndef CONSTANTS_C_
 #define CONSTANTS_C_
 
-
+const bool debug = true;
 
 // boundary conditions
-const float T_left = 0.1;
 const float T_right = 1.0;
+const float T_left = 0.1;
 
 // define physical constants
-const float kappa_max = T_right;
+const float kappa_max = 1.0;
 
 
 // specify the order of the differentiation in each direction
@@ -24,10 +24,10 @@ const uint m_b = 1;
 const uint m = m_b + m_f;
 
 // size of stride
-const uint lx = 16;
+const uint lx = 10;
 
 // number of strides
-const uint Nx = 16;
+const uint Nx = 20;
 
 // downsampling factor
 const uint wt = 1024;
@@ -50,11 +50,11 @@ const float Dx = 1.0;
 const float dx = Dx / (float) Lx;
 
 // calculate the parabolic step size
-const float f_CFL = 1.0 / 2.0;	// factor below maximum step size
+const float f_CFL = 0.25;	// factor below maximum step size
 const float dt_p = f_CFL * (dx * dx) / (2.0 * kappa_max);	// CFL condition
 
 // calculate the hyperbolic step size
-const float dt_h =  dt_p;
+const float dt_h =  50.0 * dt_p;
 
 // calculate hyperbolic propagation speed
 const float c_h = f_CFL * dx / dt_h;
