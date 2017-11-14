@@ -30,11 +30,13 @@ int main(void)
 
 	// run CPU test
 	float cpu_time = 0;
-	cpu_time = heat_1d_cpu_solve(T_cpu, q_cpu, x, false);
+	cpu_time = heat_1d_cpu_solve(T_cpu, q_cpu, x, false, "cpu/");
 	printf("cpu:  %f ms\n", cpu_time);
 
 	// run GPU test
-	float gpu_time = heat_1d_gpu_solve(T_gpu, q_gpu,  x, false);
+	float gpu_time = 0;
+	gpu_time = heat_1d_cpu_solve(T_gpu, q_gpu, x, true, "gpu/");
+//	gpu_time = heat_1d_gpu_solve(T_gpu, q_gpu,  x, false);
 	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
 	// calculate rms error
@@ -51,7 +53,7 @@ int main(void)
 	return 0;
 }
 
-float heat_1d_gpu_solve(float * T, float * q, float * x,  bool fickian){
+float heat_1d_gpu_solve(float * T, float * q, float * x,  bool fickian, std::string path){
 
 	// Set up device
 	int dev = 0;
@@ -138,7 +140,7 @@ float heat_1d_gpu_solve(float * T, float * q, float * x,  bool fickian){
 	// copy to original argument pointers
 	CHECK(cudaMemcpy(T, T_h, L * sizeof(float), cudaMemcpyHostToHost));
 
-	save_results("gpu/", T, x);
+	save_results(path, T, x);
 
 	return gpu_time;
 
@@ -192,7 +194,7 @@ __global__ void heat_1d_gpu_parabolic_step(float * T_d, float * q, float * x, ui
 
 }
 
-float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian){
+float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::string path){
 
 	printf(" dx = %e\n dt_p = %e\n dt_h = %e\n c_h = %e\n tau = %e\n", dx, dt_p, dt_h, c_h, 1/ (c_h * c_h));
 
@@ -214,8 +216,15 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian){
 				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
 				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
 			}
-			heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
-			//			heat_1d_cpu_parabolic_step(T, T_d, q_d, x, tj);
+
+			if(fickian){
+				heat_1d_cpu_parabolic_step(T, T_d, q_d, x, tj);
+			} else {
+				heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
+			}
+
+
+			//
 
 		}
 
@@ -225,7 +234,7 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian){
 	cpu_time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
 
 
-	save_results("cpu/", T, x);
+	save_results(path, T, x);
 
 	return cpu_time;
 
@@ -252,7 +261,7 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 		float c2 = c_h * c_h;
 
-		float kappa =2e-2*(T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
+		float kappa =(T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
 //		float kappa = 0.1;
 
 		//		 compute hyperbolic timescale
@@ -266,10 +275,10 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float dt = dt_h;
 
 
-		tau = max(tau, 4.0*dt);
-		if(i == Lx - 2 and n % wt == 0){
-			printf("%e\n", tau/dt);
-		}
+		tau = 5e-1 * max(tau, 4.0*dt);
+//		if(i == Lx - 2 and n % wt == 0){
+//			printf("%e\n", tau/dt);
+//		}
 //
 //					printf("n = %d\n",n);
 //					printf("tau = %e\n", tau);
@@ -321,7 +330,7 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, ui
 		float x0 = x[i + 0];
 		float x1 = x[i + 1];
 
-		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2;
+		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
 
 
 		float dt = dt_p;
