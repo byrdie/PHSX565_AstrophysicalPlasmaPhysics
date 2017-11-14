@@ -1,0 +1,17 @@
+c_default=173,216,230
+content_assist_proposals_timeout=5000
+eclipse.preferences.version=1
+hoverModifierMasks=org.eclipse.cdt.ui.BestMatchHover;0;org.eclipse.cdt.debug.internal.ui.editors.DebugTextHover;0;org.eclipse.cdt.ui.ProblemHover;0;org.eclipse.cdt.ui.CDocHover;0;org.eclipse.cdt.ui.CMacroExpansionHover;0;org.eclipse.cdt.ui.CSourceHover;131072;org.eclipse.cdt.ui.AnnotationHover;0;
+hoverModifiers=org.eclipse.cdt.ui.BestMatchHover;0;org.eclipse.cdt.debug.internal.ui.editors.DebugTextHover;\!0;org.eclipse.cdt.ui.ProblemHover;\!0;org.eclipse.cdt.ui.CDocHover;\!0;org.eclipse.cdt.ui.CMacroExpansionHover;\!0;org.eclipse.cdt.ui.CSourceHover;Shift;org.eclipse.cdt.ui.AnnotationHover;\!0;
+pp_default=255,192,203
+semanticHighlighting.com.nvidia.cuda.ide.editor.preferences.sharedMemoryVariable.color=255,255,0
+semanticHighlighting.cudaDeviceFunctionBackground.enabled=false
+semanticHighlighting.cudaHostDeviceFunctionBackground.color=47,47,47
+semanticHighlighting.kernelInvocationBkground.color=68,34,68
+semanticHighlighting.kernelInvocationBkground.enabled=false
+semanticHighlighting.templateParameter.color=30,144,255
+sourceHoverBackgroundColor=59,59,59
+spelling_locale_initialized=true
+spelling_user_dictionary_encoding=
+useAnnotationsPrefPage=true
+useQuickDiffPrefPage=true
