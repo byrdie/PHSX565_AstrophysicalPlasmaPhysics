@@ -36,7 +36,7 @@ int main(void)
 	// run GPU test
 	float gpu_time = 0;
 	gpu_time = heat_1d_cpu_solve(T_gpu, q_gpu, x, true, "gpu/");
-//	gpu_time = heat_1d_gpu_solve(T_gpu, q_gpu,  x, false);
+	//	gpu_time = heat_1d_gpu_solve(T_gpu, q_gpu,  x, false);
 	printf("gpu t =  %f ms, R = %f\n", gpu_time, cpu_time / gpu_time);
 
 	// calculate rms error
@@ -140,7 +140,7 @@ float heat_1d_gpu_solve(float * T, float * q, float * x,  bool fickian, std::str
 	// copy to original argument pointers
 	CHECK(cudaMemcpy(T, T_h, L * sizeof(float), cudaMemcpyHostToHost));
 
-	save_results(path, T, x);
+	save_results(path, T, q, x);
 
 	return gpu_time;
 
@@ -202,44 +202,66 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 	struct timeval t1, t2;
 	gettimeofday(&t1, 0);
 
-	float * T_d = new float[wt * Lx];
-	float * q_d = new float[wt * Lx];
+	float * T_d = new float[bt * Lx];
+	float * q_d = new float[bt * Lx];
 	memcpy(T_d, T, Lx * sizeof(float));
-	memcpy(q_d, q, Lx * sizeof(float));
+	memcpy(q_d, q, Lx * sizeof(float));\
 
 	// main time-marching loop
-	for(uint ti = 0; ti < Wt; ti++){	// downsampled resolution
+	uint ti = 0;
+	for(uint n = 0; n < Lt; n++){
 
-		for(uint tj = 0; tj < wt; tj++){	// original resolution
+		if(fickian){
+			heat_1d_cpu_parabolic_step(T, T_d, q_d, x, n);
+		} else {
+			heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, n);
+		}
 
-
-
-			if(fickian){
-				heat_1d_cpu_parabolic_step(T, T_d, q_d, x, tj);
-			} else {
-				heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
+		if((n % wt) == 0){
+			//				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
+			//				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
+			for(int i = 0; i < Lx; i++){
+				T[ti * Lx + i] = T_d[(n % bt) * Lx + i];
+				q[ti * Lx + i] = q_d[(n % bt) * Lx + i];
 			}
-
-			if(tj == 0 and ti > 0) {
-//				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
-//				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
-				for(int i = 0; i < Lx; i++){
-					T[ti * Lx + i] = T_d[i];
-					q[ti * Lx + i] = q_d[i];
-				}
-			}
-
-			//
-
+			ti++;
 		}
 
 	}
+
+	//	// main time-marching loop
+	//	for(uint ti = 0; ti < Wt; ti++){	// downsampled resolution
+	//
+	//		for(uint tj = 0; tj < wt; tj++){	// original resolution
+	//
+	//
+	//
+	//			if(fickian){
+	//				heat_1d_cpu_parabolic_step(T, T_d, q_d, x, tj);
+	//			} else {
+	//				heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
+	//			}
+	//
+	//			if(tj == 0 and ti > 0) {
+	//				//				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
+	//				//				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
+	//				for(int i = 0; i < Lx; i++){
+	//					T[ti * Lx + i] = T_d[i];
+	//					q[ti * Lx + i] = q_d[i];
+	//				}
+	//			}
+	//
+	//			//
+	//
+	//		}
+	//
+	//	}
 
 	gettimeofday(&t2, 0);
 	cpu_time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
 
 
-	save_results(path, T, x);
+	save_results(path, T, q, x);
 
 	return cpu_time;
 
@@ -253,11 +275,11 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 	for(i = 0; i < (Lx - 1); i++){
 
 		// Load stencil
-		float T0 = T_d[n * Lx + (i + 0)];
-		float T1 = T_d[n * Lx + (i + 1)];
+		float T0 = T_d[(n % bt) * Lx + (i + 0)];
+		float T1 = T_d[(n % bt) * Lx + (i + 1)];
 
 
-		float q0 = q[n * Lx + (i + 0)];
+		float q0 = q[(n % bt) * Lx + (i + 0)];
 
 		// Load position grid
 
@@ -267,13 +289,13 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float c2 = c_h * c_h;
 
 		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
-//		float kappa = 0.1;
+		//		float kappa = 0.1;
 
 		//		 compute hyperbolic timescale
-		float tau = g*kappa;
+		//		float tau = g*kappa;
 
-//				float tau = kappa / c2;
-//		float tau = dt_p;
+		float tau = kappa / c2;
+		//		float tau = dt_p;
 
 
 
@@ -281,41 +303,41 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float dt = dt_h;
 
 
-//		tau = max(tau, 4.0*dt);
+				tau = max(tau, 4.0*dt);
 		if(i == 3* Lx / 4){
 			printf("%e\n", T0);
 		}
-//
-//					printf("n = %d\n",n);
-//					printf("tau = %e\n", tau);
+		//
+		//					printf("n = %d\n",n);
+		//					printf("tau = %e\n", tau);
 		//			printf("q0 - ((c2 * (T1 - T0) *  dt) / (x1 - x0)) - (q0 * dt / tau)\n");
 		//			printf("%e - ((%e * (%e - %e) *  %e) / (%e - %e)) - (%e * %e / %e)\n", q0, c2, T1,T0, dt, x1, x0, q0, dt, tau);
 		//			printf("%e - %e - %e\n", q0, ((c2 * (T1 - T0) *  dt) / (x1 - x0)), (q0 * dt / tau));
-//				}
+		//				}
 
 
 
-//		float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
-		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
-		q[((n + 1) % wt) * Lx + i] = qa;
+				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
+//		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
+		q[((n + 1) % bt) * Lx + i] = qa;
 
 		if(i > 0) {
-			float q9 = q[n * Lx + (i - 1)];
+			float q9 = q[(n % bt) * Lx + (i - 1)];
 			float x9 = x[i - 1];
 			float Ta = T0 - ((q0 - q9) * dt / (x0 - x9));
-			T_d[((n + 1) % wt) * Lx + i] = Ta;
+			T_d[((n + 1) % bt) * Lx + i] = Ta;
 		}
 
 	}
 
 	// apply left boundary conditions
 	i = 0;
-	T_d[((n + 1) % wt) * Lx + i] = T_left;
+	T_d[((n + 1) % bt) * Lx + i] = T_left;
 
 
 	// apply right boundary conditions
 	i = Lx - 1;
-	T_d[((n + 1) % wt) * Lx + i] = T_right;
+	T_d[((n + 1) % bt) * Lx + i] = T_right;
 }
 
 void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, uint n){
@@ -325,11 +347,11 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, ui
 	for(i = 0; i < Lx - 1; i++){
 
 		// Load stencil
-		float T0 = T_d[n * Lx + (i + 0)];
-		float T1 = T_d[n * Lx + (i + 1)];
+		float T0 = T_d[(n % bt) * Lx + (i + 0)];
+		float T1 = T_d[(n % bt) * Lx + (i + 1)];
 
 
-		float q0 = q[n * Lx + (i + 0)];
+		float q0 = q[(n % bt) * Lx + (i + 0)];
 
 		// Load position grid
 
@@ -342,25 +364,25 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, ui
 		float dt = dt_p;
 
 		float qa = -kappa * (T1 - T0) / (x1 - x0);
-		q[((n + 1) % wt) * Lx + i] = qa;
+		q[((n + 1) % bt) * Lx + i] = qa;
 
 		if(i > 0) {
-			float q9 = q[n * Lx + (i - 1)];
+			float q9 = q[(n % bt) * Lx + (i - 1)];
 			float x9 = x[i - 1];
 			float Ta = T0 - ((q0 - q9) * dt / (x0 - x9));
-			T_d[((n + 1) % wt) * Lx + i] = Ta;
+			T_d[((n + 1) % bt) * Lx + i] = Ta;
 		}
 
 	}
 
 	// apply left boundary conditions
 	i = 0;
-	T_d[((n + 1) % wt) * Lx + i] = T_left;
+	T_d[((n + 1) % bt) * Lx + i] = T_left;
 
 
 	// apply right boundary conditions
 	i = Lx - 1;
-	T_d[((n + 1) % wt) * Lx + i] = T_right;
+	T_d[((n + 1) % bt) * Lx + i] = T_right;
 }
 
 void initial_conditions(float * T, float * q, float * x){
@@ -371,13 +393,17 @@ void initial_conditions(float * T, float * q, float * x){
 	printf("%d\n",n);
 	for(int i = 0; i < Lx; i++){		// Initial condition for dependent variable
 
-		float T0 = 0.1 + 0.9 * pow(x[i],5);
-		float T1 = 0.1 + 0.9 * pow(x[i + 1],5);
+		float x0 = x[i];
+		float x1 = x[i + 1];
+		float T0 = 0.1 + 0.9 * pow(x0,5);
+		float T1 = 0.1 + 0.9 * pow(x1,5);
+		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
 
 		T[(n % wt) * Lx + i] = T0;
 
-		q[n * Lx + i] = 0;
-
+		if(i < (Lx - 1)){
+			q[n * Lx + i] = -kappa * (T1 - T0) / (x1 - x0);
+		}
 
 
 	}
@@ -391,24 +417,27 @@ void initial_grid(float * x){
 
 }
 
-void save_results(std::string path, float * T,  float * x){
+void save_results(std::string path, float * T, float * q,  float * x){
 
 	// open files
 	FILE * meta_f = fopen(("output/" + path + "meta.dat").c_str(), "wb");
 	FILE * T_f = fopen(("output/" + path + "T.dat").c_str(), "wb");
+	FILE * q_f = fopen(("output/" + path + "q.dat").c_str(), "wb");
 	FILE * x_f = fopen(("output/" + path + "x.dat").c_str(), "wb");
 
 	// save state variables
-	fwrite(&Lt, sizeof(uint), 1, meta_f);
+	fwrite(&Wt, sizeof(uint), 1, meta_f);
 	fwrite(&Lx, sizeof(uint), 1, meta_f);
 
 	// write data
 	fwrite(T, sizeof(float), L, T_f);
+	fwrite(q, sizeof(float), L, q_f);
 	fwrite(x, sizeof(float), Lx, x_f);
 
 	// close files
 	fclose(meta_f);
 	fclose(T_f);
+	fclose(q_f);
 	fclose(x_f);
 
 

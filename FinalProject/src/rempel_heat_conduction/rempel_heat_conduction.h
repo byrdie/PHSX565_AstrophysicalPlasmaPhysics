@@ -34,6 +34,6 @@ float heat_1d_gpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 __global__ void heat_1d_gpu_parabolic_step(float * T_d, float * q, float * x, uint n);
 __global__ void heat_1d_gpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, uint n);
 
-void save_results(std::string path, float * T, float * x);
+void save_results(std::string path, float * T, float * q, float * x);
 
 #endif /* HEAT_PARABOLIC_CUDA_H_ */
