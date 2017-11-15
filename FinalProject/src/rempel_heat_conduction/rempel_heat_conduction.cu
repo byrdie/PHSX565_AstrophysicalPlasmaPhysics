@@ -212,10 +212,7 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 
 		for(uint tj = 0; tj < wt; tj++){	// original resolution
 
-			if(tj == 0 and ti > 0) {
-				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
-				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
-			}
+
 
 			if(fickian){
 				heat_1d_cpu_parabolic_step(T, T_d, q_d, x, tj);
@@ -223,6 +220,14 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 				heat_1d_cpu_hyperbolic_step(T, T_d, q_d, x, tj);
 			}
 
+			if(tj == 0 and ti > 0) {
+//				memcpy(T + (ti * Lx), T_d, Lx * sizeof(float));
+//				memcpy(q + (ti * Lx), q_d, Lx * sizeof(float));
+				for(int i = 0; i < Lx; i++){
+					T[ti * Lx + i] = T_d[i];
+					q[ti * Lx + i] = q_d[i];
+				}
+			}
 
 			//
 
@@ -261,13 +266,14 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 		float c2 = c_h * c_h;
 
-		float kappa = 1e-3 * (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
+		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
 //		float kappa = 0.1;
 
 		//		 compute hyperbolic timescale
-//		float tau = 0.001*kappa;
+		float tau = g*kappa;
 
-				float tau = kappa / c2;
+//				float tau = kappa / c2;
+//		float tau = dt_p;
 
 
 
@@ -276,9 +282,9 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 
 //		tau = max(tau, 4.0*dt);
-//		if(i == Lx - 2 and n % wt == 0){
-//			printf("%e\n", tau/dt);
-//		}
+		if(i == 3* Lx / 4){
+			printf("%e\n", T0);
+		}
 //
 //					printf("n = %d\n",n);
 //					printf("tau = %e\n", tau);
