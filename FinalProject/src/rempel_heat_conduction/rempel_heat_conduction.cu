@@ -288,7 +288,10 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 		float c2 = c_h * c_h;
 
-		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
+
+		float kappa_0 = T0 * T0 * sqrt(T0);
+		float kappa_1 = T1 * T1 * sqrt(T1);
+		float kappa = (kappa_0 + kappa_1) / 2.0;
 		//		float kappa = 0.1;
 
 		//		 compute hyperbolic timescale
@@ -304,9 +307,9 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 
 				tau = max(tau, 4.0*dt);
-		if(i == 3* Lx / 4){
-			printf("%e\n", T0);
-		}
+//		if(i == Lx - 2){
+//			printf("%e\n", q0);
+//		}
 		//
 		//					printf("n = %d\n",n);
 		//					printf("tau = %e\n", tau);
@@ -317,8 +320,9 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 
 
-				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
+//				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
 //		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
+		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
 		q[((n + 1) % bt) * Lx + i] = qa;
 
 		if(i > 0) {
@@ -390,7 +394,6 @@ void initial_conditions(float * T, float * q, float * x){
 	int n = 0;
 
 	// initialize host memory
-	printf("%d\n",n);
 	for(int i = 0; i < Lx; i++){		// Initial condition for dependent variable
 
 		float x0 = x[i];
@@ -407,6 +410,8 @@ void initial_conditions(float * T, float * q, float * x){
 
 
 	}
+
+	printf("%e\n",x[Lx-1]);
 
 
 }
