@@ -24,10 +24,10 @@ const uint m_b = 1;
 const uint m = m_b + m_f;
 
 // size of stride
-const uint lx = 20;
+const uint lx = 400;
 
 // number of strides
-const uint Nx = 20;
+const uint Nx = 1;
 
 // buffer size
 const uint bt = 4;
@@ -36,7 +36,7 @@ const uint bt = 4;
 const uint wt = 1;
 
 // final size after downsampling
-const uint Wt =  4;
+const uint Wt =  10;
 
 // Size of domain in gridpoints (including boundary cells)
 const uint Lt = Wt * wt;
