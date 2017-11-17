@@ -56,7 +56,7 @@ const float dx = Dx / (float) (Lx - 1);
 const float f_CFL = 1.0 / 4.0;	// factor below maximum step size
 const float dt_p = f_CFL * (dx * dx) / (2.0 * kappa_max);	// CFL condition
 
-const float beta = 10.0;
+const float beta = 1.0;
 
 // calculate the hyperbolic step size
 const float dt_h =  beta * dt_p;

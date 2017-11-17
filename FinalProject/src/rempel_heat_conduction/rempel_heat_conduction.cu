@@ -320,9 +320,9 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 
 
-//				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
+				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
 //		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
-		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
+//		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
 		q[((n + 1) % bt) * Lx + i] = qa;
 
 		if(i > 0) {
