@@ -196,7 +196,7 @@ __global__ void heat_1d_gpu_parabolic_step(float * T_d, float * q, float * x, ui
 
 float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::string path){
 
-	printf(" dx = %e\n dt_p = %e\n dt_h = %e\n c_h = %e\n tau = %e\n", dx, dt_p, dt_h, c_h, 1/ (c_h * c_h));
+	printf(" dx = %e\n dt_p = %e\n dt_h = %e\n c_h = %e\n tau = %e\n", dx, dt_p, dt_h, v_h, kappa_max / (v_h * v_h));
 
 	float cpu_time;
 	struct timeval t1, t2;
@@ -269,7 +269,7 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 
 void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, uint n){
 
-
+	printf("________________\n");
 	// perform timestep
 	uint i;
 	for(i = 0; i < (Lx - 1); i++){
@@ -280,36 +280,39 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 
 
 		float q0 = q[(n % bt) * Lx + (i + 0)];
+		float qz = q[((n - 1) % bt) * Lx + (i + 0)];
 
 		// Load position grid
 
 		float x0 = x[i + 0];
 		float x1 = x[i + 1];
 
-		float c2 = c_h * c_h;
+		float v2 = v_h * v_h;
 
 
 		float kappa_0 = T0 * T0 * sqrt(T0);
 		float kappa_1 = T1 * T1 * sqrt(T1);
 		float kappa = (kappa_0 + kappa_1) / 2.0;
+
+
 		//		float kappa = 0.1;
 
 		//		 compute hyperbolic timescale
 		//		float tau = g*kappa;
 
-		float tau = kappa / c2;
+		float tau = kappa / v2;
 		//		float tau = dt_p;
 
-
+		float c2 = kappa / tau;
 
 
 		float dt = dt_h;
 
 
-				tau = max(tau, 4.0*dt);
-//		if(i == Lx - 2){
-//			printf("%e\n", q0);
-//		}
+		tau = max(tau, 4 * dt);
+		//		if(i == Lx - 2){
+		//			printf("%e\n", q0);
+		//		}
 		//
 		//					printf("n = %d\n",n);
 		//					printf("tau = %e\n", tau);
@@ -318,21 +321,45 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		//			printf("%e - %e - %e\n", q0, ((c2 * (T1 - T0) *  dt) / (x1 - x0)), (q0 * dt / tau));
 		//				}
 
+		float R = (tau - dt) / tau;
+		float S = (kappa * dt) / (tau * dx);
 
-
-				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
-//		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
-//		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
-		q[((n + 1) % bt) * Lx + i] = qa;
+		float qa = - tau * (q0 - qz) - kappa * (T1 - T0) / (x1 - x0);
+//		float qa = R * q0 - S * (T1 - T0);
+				//				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
+				//		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
+				//		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
+				q[((n + 1) % bt) * Lx + i] = qa;
 
 		if(i > 0) {
 			float q9 = q[(n % bt) * Lx + (i - 1)];
 			float x9 = x[i - 1];
 			float Ta = T0 - ((q0 - q9) * dt / (x0 - x9));
 			T_d[((n + 1) % bt) * Lx + i] = Ta;
+//						T_d[((n + 1) % bt) * Lx + i] = T0;
+
+			if(i > Lx - 5){
+	//			printf("S = (%f * %f) / (%f * %f)\n", kappa, dt, tau, dx);
+	//			printf("  = %f / %f\n", kappa * dt, tau * dx);
+	//			printf("  = %f\n", S);
+
+//				printf("------------------\n");
+//				printf("qa_%d = %f * %f - %f * (%f - %f)\n",i, R, q0, S, T1, T0);
+//				printf("      = %f * %f - %f * %f\n", R, q0, S, T1 - T0);
+//				printf("      = %f - %f\n", R * q0, S * (T1 - T0));
+//				printf("      = %f\n", qa);
+				printf("------------------\n");
+				printf("Ta_%d = %f - %f * (%f - %f)\n",i, T0, dt / dx, q0, q9);
+				printf("      = %f - %f * %f\n", T0, dt / dx, q0 - q9);
+				printf("      = %f - %f\n", T0, dt / dx * (q0 - q9));
+				printf("      = %f\n", Ta);
+			}
 		}
 
+
+
 	}
+	printf("_______________________________________________________\n");
 
 	// apply left boundary conditions
 	i = 0;
@@ -375,6 +402,7 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, ui
 			float x9 = x[i - 1];
 			float Ta = T0 - ((q0 - q9) * dt / (x0 - x9));
 			T_d[((n + 1) % bt) * Lx + i] = Ta;
+
 		}
 
 	}
@@ -406,6 +434,7 @@ void initial_conditions(float * T, float * q, float * x){
 
 		if(i < (Lx - 1)){
 			q[n * Lx + i] = -kappa * (T1 - T0) / (x1 - x0);
+//			q[n * Lx + i] = 0;
 		}
 
 
