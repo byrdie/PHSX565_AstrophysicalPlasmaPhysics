@@ -105,7 +105,7 @@
 				\begin{equation}
 					- \tau \omega^2 + i \omega + \kappa k^2 = 0.
 				\end{equation}
-				Solve for $\omega$ to find the \ac{DR}
+				Solve for $\omega$ to find the \ac{DR} using the quadratic equation
 				\begin{equation}
 					\Rightarrow \; \omega(k) = \frac{1}{2 \tau} \left( i \pm \sqrt{4 \kappa \tau k^2 - 1} \right).
 				\end{equation}
@@ -114,19 +114,20 @@
 				\begin{equation} \label{re_ineq}
 					 4 \kappa \tau k^2 > 1.
 				\end{equation}
-				Equation \ref{re_ineq} can be expressed as a condition on $\tau$
+				Inequality \ref{re_ineq} can be expressed as a condition on $\tau$
 				\begin{equation} \label{tau_o}
 					\tau > \frac{1}{4 \kappa k^2}.
-				\end{equation}
-				
+				\end{equation}			
 				If Inequality \ref{tau_o} is satisfied, the magnitude of $\omega$ is
-				\begin{equation}
-					|\omega(k)| = 2 \kappa k^2
-				\end{equation}
-				If Inequality \ref{tau_o} is not satisfied, the magnitude of $\omega$ is
-				\begin{equation}
-					|\omega(k)| = 
-				\end{equation}
+				\begin{align}
+					|\omega(k)| &= \frac{1}{2 \tau} \sqrt{ 1^2 +  \left(\pm \sqrt{4 \kappa \tau k^2 - 1}\right)^2 } \\
+								&= \frac{1}{2 \tau} \sqrt{1 + (4 \kappa \tau k^2 - 1)} \\
+								&= \frac{1}{2 \tau} \sqrt{4 \kappa \tau k^2} \\
+								&= \sqrt{\frac{4 \kappa \tau k^2}{4 \tau^2}} \\
+								&= \sqrt{\frac{\kappa}{\tau}} k \\
+								&= c k
+				\end{align}
+
 			
 		\subsection{Analytic Solution}
 			\subsubsection{Parabolic}
