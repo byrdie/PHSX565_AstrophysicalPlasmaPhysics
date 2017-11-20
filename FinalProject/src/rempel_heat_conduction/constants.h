@@ -24,7 +24,7 @@ const uint m_b = 1;
 const uint m = m_b + m_f;
 
 // size of stride
-const uint lx = 400;
+const uint lx = 200;
 
 // number of strides
 const uint Nx = 1;
@@ -36,7 +36,7 @@ const uint bt = 4;
 const uint wt = 1;
 
 // final size after downsampling
-const uint Wt =  10;
+const uint Wt =  1024;
 
 // Size of domain in gridpoints (including boundary cells)
 const uint Lt = Wt * wt;
@@ -56,7 +56,7 @@ const float dx = Dx / (float) (Lx - 1);
 const float f_CFL = 1.0 / 4.0;	// factor below maximum step size
 const float dt_p = f_CFL * (dx * dx) / (2.0 * kappa_max);	// CFL condition
 
-const float beta = 100.0;
+const float beta = 50.0;
 
 // calculate the hyperbolic step size
 const float dt_h =  beta * dt_p;

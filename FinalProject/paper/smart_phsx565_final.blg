@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: smart_phsx565_final.aux
+The style file: apj.bst
+Database file #1: smart_phsx565_finalNotes.bib
+Database file #2: sources.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 1 entry,
+            3222 wiz_defined-function locations,
+            664 strings with 4552 characters,
+and the built_in function-call counts, 332 in all, are:
+= -- 26
+> -- 12
+< -- 1
++ -- 4
+- -- 3
+* -- 19
+:= -- 67
+add.period$ -- 1
+call.type$ -- 1
+change.case$ -- 4
+chr.to.int$ -- 1
+cite$ -- 1
+duplicate$ -- 16
+empty$ -- 28
+format.name$ -- 4
+if$ -- 65
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 1
+newline$ -- 8
+num.names$ -- 4
+pop$ -- 4
+preamble$ -- 1
+purify$ -- 4
+quote$ -- 0
+skip$ -- 15
+stack$ -- 0
+substring$ -- 14
+swap$ -- 0
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 9
+warning$ -- 0
+while$ -- 4
+width$ -- 0
+write$ -- 14

@@ -269,7 +269,7 @@ float heat_1d_cpu_solve(float * T, float * q, float * x, bool fickian, std::stri
 
 void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, uint n){
 
-	printf("________________\n");
+//	printf("________________\n");
 	// perform timestep
 	uint i;
 	for(i = 0; i < (Lx - 1); i++){
@@ -290,17 +290,17 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float v2 = v_h * v_h;
 
 
-		float kappa_0 = T0 * T0 * sqrt(T0);
-		float kappa_1 = T1 * T1 * sqrt(T1);
-		float kappa = (kappa_0 + kappa_1) / 2.0;
+//		float kappa_0 = T0 * T0 * sqrt(T0);
+//		float kappa_1 = T1 * T1 * sqrt(T1);
+//		float kappa = (kappa_0 + kappa_1) / 2.0;
 
 
-		//		float kappa = 0.1;
+				float kappa = 1.0;
 
 		//		 compute hyperbolic timescale
 		//		float tau = g*kappa;
 
-		float tau = kappa / v2;
+		float tau = kappa / v_h;
 		//		float tau = dt_p;
 
 		float c2 = kappa / tau;
@@ -324,8 +324,8 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float R = (tau - dt) / tau;
 		float S = (kappa * dt) / (tau * dx);
 
-		float qa = - tau * (q0 - qz) - kappa * (T1 - T0) / (x1 - x0);
-//		float qa = R * q0 - S * (T1 - T0);
+//		float qa = - tau * (q0 - qz) - kappa * (T1 - T0) / (x1 - x0);
+		float qa = R * q0 - S * (T1 - T0);
 				//				float qa = q0 - dt * (q0 + kappa * (T1 - T0) /  dx) / tau;
 				//		float qa = dt * (q0 * tau / dt - kappa * (T1 - T0) / dx) / (tau + dt);
 				//		float qa = ((2 * tau - dt) *  q0 - dt * kappa * (T1 - T0) / dx) / (2 * tau + dt);
@@ -348,18 +348,18 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 //				printf("      = %f * %f - %f * %f\n", R, q0, S, T1 - T0);
 //				printf("      = %f - %f\n", R * q0, S * (T1 - T0));
 //				printf("      = %f\n", qa);
-				printf("------------------\n");
-				printf("Ta_%d = %f - %f * (%f - %f)\n",i, T0, dt / dx, q0, q9);
-				printf("      = %f - %f * %f\n", T0, dt / dx, q0 - q9);
-				printf("      = %f - %f\n", T0, dt / dx * (q0 - q9));
-				printf("      = %f\n", Ta);
+//				printf("------------------\n");
+//				printf("Ta_%d = %f - %f * (%f - %f)\n",i, T0, dt / dx, q0, q9);
+//				printf("      = %f - %f * %f\n", T0, dt / dx, q0 - q9);
+//				printf("      = %f - %f\n", T0, dt / dx * (q0 - q9));
+//				printf("      = %f\n", Ta);
 			}
 		}
 
 
 
 	}
-	printf("_______________________________________________________\n");
+//	printf("_______________________________________________________\n");
 
 	// apply left boundary conditions
 	i = 0;
@@ -369,6 +369,11 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 	// apply right boundary conditions
 	i = Lx - 1;
 	T_d[((n + 1) % bt) * Lx + i] = T_right;
+
+//	i = Lx - 2;
+//	q[((n + 1) % bt) * Lx + i] = 0;
+
+
 }
 
 void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, uint n){
@@ -433,8 +438,8 @@ void initial_conditions(float * T, float * q, float * x){
 		T[(n % wt) * Lx + i] = T0;
 
 		if(i < (Lx - 1)){
-			q[n * Lx + i] = -kappa * (T1 - T0) / (x1 - x0);
-//			q[n * Lx + i] = 0;
+//			q[n * Lx + i] = -kappa * (T1 - T0) / (x1 - x0);
+			q[n * Lx + i] = 0;
 		}
 
 

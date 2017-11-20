@@ -1,0 +1,8 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\href{#1}{#1}}
+
+\bibitem[{{Rempel}(2017)}]{A}
+{Rempel}, M. 2017, \apj, 834, 10
+
+\end{thebibliography}

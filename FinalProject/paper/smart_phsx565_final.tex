@@ -1,0 +1,153 @@
+\documentclass[iop]{emulateapj}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{float}
+
+\usepackage{hyperref}
+\usepackage[nolist]{acronym}
+
+
+\begin{document}
+	
+	\title{Hyperbolic Heat Conduction Using First-Order Explict Finite Difference}
+	\author{Roy Smart}
+	\author{Dana Longcope}
+	\affil{Department of Physics, Montana State University, Bozeman MT, 59717, USA}
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	\section{Introduction}
+	
+		\noindent
+		An accurate and efficient model of heat conduction is important for models of the solar atmosphere.
+		
+		The most common model of heat conduction uses diffusion describe the spread of heat throughout a fluid.
+			The process of diffusion is parabolic, i.e. information can instantly be communicated across the domain of a heat conducting fluid.
+			This property can be prohibitive for numerical solutions of heat-conducting fluids, since it necessitates the use of extremely short timesteps.
+			
+		To address this problem, a hyperbolic form of heat conduction has been proposed.
+			A hyperbolic formulation means that there is an upper limit on the speed of information.
+				This method would be arguably more accurate than the parabolic description since heat obviously doesn't travel faster than the speed of light, for example.
+			The hyperbolic form of the heat equation should allow for faster timesteps.
+			
+		In this study, we will investigate the performance of hyperbolic heat conduction compared to parabolic heat conduction in one dimension.
+	
+	\section{Description}
+		\subsection{Parabolic Heat Conduction}
+		
+			Parabolic heat conduction is often known simply as the heat equation and is given in one dimension as
+			\begin{equation} \label{par}
+				\frac{\partial T}{\partial t} - \kappa \frac{\partial^2 T}{\partial x^2} = 0
+			\end{equation}
+			where $T$ is the temperature, $x$ is a spatial variable, $t$ is time, and $\kappa$ is the thermal diffusivity.
+
+			The diffusion operator in the second term causes some initial condition to be blurred out.
+		
+		\subsection{Hyperbolic Heat Conduction}
+		
+			Hyperbolic heat conduction equations have been proposed by a number of researchers in astrophysics and solar physics.
+				Recently, \cite{A} used a hyperbolic form of the heat conduction equation in the MURaM radiative \ac{MHD} code to form a comprehensive simulation of the solar atmosphere.
+				To illustrate their approach, \cite{A} presented the following one-dimensional system of equations.
+				\begin{gather}
+					\tau \frac{\partial q}{\partial t} + q = -\kappa \frac{\partial T}{\partial x} \label{flux}\\
+					\frac{\partial T}{\partial t} = -\frac{\partial q}{\partial x} \label{temp}
+				\end{gather}
+				where $q$ is the heat flux and $\tau$ is some characteristic time scale. 
+				Notice that if $\tau = 0$, the system is equivalent to the parabolic form of the heat equation, expressed as two first-order equations.
+				
+				If we assume that $\kappa$ and $\tau$ are constants, we can express Equation \ref{flux} as a single second-order equation by taking a spatial derivative and plugging in Equation \ref{temp}.
+				\begin{align}
+					& \frac{\partial}{\partial x} \left( \tau \frac{\partial q}{\partial t} \right) + \frac{\partial q}{\partial x} = - \frac{\partial}{\partial x} \left( \kappa \frac{\partial T}{\partial x} \right) \\
+					\Rightarrow \quad & \tau \frac{\partial}{\partial t} \frac{\partial q}{\partial x} + \frac{\partial q}{\partial x} = -\kappa \frac{\partial^2 T}{\partial x^2} \\
+					\Rightarrow \quad & \tau \frac{\partial^2 T}{\partial t^2} +  \frac{\partial T}{\partial t} - \kappa \frac{\partial^2 T}{\partial x^2} = 0 \label{wave}
+				\end{align}
+				The above equation is a linear, damped wave equation in temperature. 
+				
+				While the solar atmosphere has a temperature-dependent thermal diffusivity $\kappa$, Equation \ref{wave} will still be useful for examining the linear behavior of the system formed by Equations \ref{flux} and \ref{temp}.
+		
+	\section{Linear Analysis}
+	
+			A linear analysis of these differential equations will be helpful towards understanding their behavior.
+	
+		\subsection{Dispersion Relation}
+		
+				We can derive a \ac{DR} for each heat conduction case.
+					These will be used to understand the range of allowable values for $\tau$.
+					The \ac{DR}s can also be useful for estimating the maximum timestep size required to maintain stability.
+					
+			\subsubsection{Parabolic}
+			
+				Deriving a \ac{DR} for the parabolic case is much simpler, so we'll start with that.
+					As in the previous section, $\kappa$ will be taken to be a constant, so we can carry out a linear analysis.
+					
+				Taking the Fourier transform of Equation \ref{par} yields
+				\begin{equation}
+					i \omega \tilde{T} + \kappa k^2 \tilde{T} = 0,
+				\end{equation}
+				where $\omega$ is the temporal frequency, $k$ is the spatial wavenumber, $\tilde{T}$ is the Fourier transform of the temperature, and $i$ is the imaginary unit.
+				Canceling $\tilde{T}$ from both terms and solving for the frequency gives the parabolic \ac{DR}
+				\begin{equation}
+					\omega(k) = i \kappa k^2.
+				\end{equation}
+				From the above \ac{DR} we can see that $\omega$ is imaginary. Thus, all wavenumbers decay exponentially, which is the expected behavior from the diffusion operator.
+			
+				
+				
+			\subsubsection{Hyperbolic}
+			
+				Similarly, for the hyperbolic case, we take the Fourier transform of Equation \ref{wave} and cancel the factors of $\tilde{T}$
+				\begin{equation}
+					- \tau \omega^2 + i \omega + \kappa k^2 = 0.
+				\end{equation}
+				Solve for $\omega$ to find the \ac{DR}
+				\begin{equation}
+					\Rightarrow \; \omega(k) = \frac{1}{2 \tau} \left( i \pm \sqrt{4 \kappa \tau k^2 - 1} \right).
+				\end{equation}
+				The first term is always imaginary, leading to decaying modes in the solution.
+				The second term is real and thus oscillatory if 
+				\begin{equation} \label{re_ineq}
+					 4 \kappa \tau k^2 > 1.
+				\end{equation}
+				Equation \ref{re_ineq} can be expressed as a condition on $\tau$
+				\begin{equation} \label{tau_o}
+					\tau > \frac{1}{4 \kappa k^2}.
+				\end{equation}
+				
+				If Inequality \ref{tau_o} is satisfied, the magnitude of $\omega$ is
+				\begin{equation}
+					|\omega(k)| = 2 \kappa k^2
+				\end{equation}
+				If Inequality \ref{tau_o} is not satisfied, the magnitude of $\omega$ is
+				\begin{equation}
+					|\omega(k)| = 
+				\end{equation}
+			
+		\subsection{Analytic Solution}
+			\subsubsection{Parabolic}
+			\subsubsection{Hyperbolic}
+	\section{Numerical Implementation}
+		\subsection{Explicit Finite-difference}
+			\subsubsection{Parabolic}
+			\subsubsection{Hyperbolic}
+		\subsection{Von Neumann Stability Analysis}
+			\subsubsection{Parabolic}
+			\subsubsection{Hyperbolic}
+	\section{Results}
+	\section{Conclusion}
+	\section{Appendix}
+			
+	\bibliographystyle{apj}
+	\bibliography{sources}
+	
+	\begin{acronym}
+		\acro{MHD}{magnetohydrodynamics}
+		\acro{DR}{dispersion relation}
+	\end{acronym}
+	
+\end{document}
