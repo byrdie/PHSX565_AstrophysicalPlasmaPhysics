@@ -96,9 +96,7 @@
 					\omega(k) = i \kappa k^2.
 				\end{equation}
 				From the above \ac{DR} we can see that $\omega$ is imaginary. Thus, all wavenumbers decay exponentially, which is the expected behavior from the diffusion operator.
-			
-				
-				
+						
 			\subsubsection{Hyperbolic}
 			
 				Similarly, for the hyperbolic case, we take the Fourier transform of Equation \ref{wave} and cancel the factors of $\tilde{T}$
@@ -127,15 +125,89 @@
 								&= \sqrt{\frac{\kappa}{\tau}} k \\
 								&= c k
 				\end{align}
+				where $c = \sqrt{\kappa / \tau}$ is some characteristic speed.
+				
+				If Inequality \ref{tau_o} is not satisfied, the magnitude of $\omega$ is then
+				\begin{align}
+					|\omega(k)| &= \frac{1}{2 \tau} \sqrt{\left( 1 \pm \sqrt{1 - 4 \kappa \tau k^2} \right)^2} \\
+								&= \frac{1}{2 \tau} \left[ 1 \pm \sqrt{1 - 4 \kappa \tau k^2} \; \right]
+				\end{align}
+				Since $4 \kappa \tau k^2 < 1$, we can perform a binomial expansion on the denominator
+				\begin{align}
+					|\omega(k)| &\approx \frac{1}{2 \tau} \left[ 1 \pm \left( 1 - 2 \kappa \tau k^2 \right) \right] \\
+								&= \frac{1}{\tau} - \kappa k^2, \quad \kappa k^2
+				\end{align}
 
 			
 		\subsection{Analytic Solution}
 			\subsubsection{Parabolic}
 			\subsubsection{Hyperbolic}
 	\section{Numerical Implementation}
+	
+		We would like to incorporate this hyperbolic heat conduction as part of a larger simulations of the solar atmosphere.
+			In the case of the solar atmosphere, $\kappa$ is in general not constant, resulting in non-linear \acp{PDE}.
+			Therefore, we must resort to numerical methods to solve the hyperbolic heat conduction equations in the environment of the solar atmosphere.
+	
 		\subsection{Explicit Finite-difference}
+		
+			One of the simplest and most popular numerical methods for solving non-linear \acp{PDE} is known as \ac{FD}.
+				The \ac{FD} method works by approximating some function using a truncated power series, and then taking the derivative of the power series to approximate the derivative of the function.
+				Here, we will be using the simplest form of \ac{FD}, first-order \ac{FD}, where derivatives are calculated using linear interpolation.
+				
+			In this work, we will be using a form of \ac{FD} known as \ac{EFD}. 
+				Under \ac{EFD}, the state of some system at some time is calculated using only the state of the system at a previous time. 
+				This is in contrast to \ac{IFD}, where the state of the system at the current time is found by solving an equation involving not only the state of the system at a previous time, but at the current time as well.
+				\ac{IFD} has the benefit of being more stable, but is ill-suited for massively parallel processors, such as supercomputer clusters and \acp{GPU}.
+				Because utilizing massively parallel processors is necessary to remain competitive, we will be restricting this analysis to \ac{EFD}.
+				
+				In the follwing sections, we will derive update rules for both the parabolic and hyperbolic forms of heat conduction.
+					Update rules are recursion relations that explain how to update the values of the dependent variables for one timestep.
+					
+				For both the parabolic and hyperbolic cases, we will express the dependent variables, $q$ and $T$, on a staggered grid.
+					Temperature will be evaluated in the center of a grid cell, while heat flux will be evaluated on the edges of a grid cell.
+		
 			\subsubsection{Parabolic}
+			
+				
+			
+				When using \ac{EFD}, it is often helpful to express all second-order equations as systems of first-order equations.
+					Noticing that Equation \ref{par} is indeed second order, we will instead start with the system formed by Equations \ref{flux} and \ref{temp} with $\tau$ set to zero.
+				\begin{gather}
+					q = -\kappa \frac{\partial T}{\partial x} \\
+					\frac{\partial T}{\partial t} = -\frac{\partial q}{\partial x} 
+				\end{gather}
+				Discretize the above system of differential equations by taking $n$ to be the index in time, $i$ to be the index in space, $\Delta t$ to be the timestep size, and $\Delta x$ to be the spatial grid size.
+				\begin{gather}
+					q_i^{n+1} = - \kappa \frac{T_{i+1}^n - T_i^n}{\Delta x} \\
+					\frac{T_i^{n+1} - T_i^n}{\Delta t} = - \frac{q_i^n - q_{i-1}^n}{\Delta x}
+				\end{gather}
+				Solve for $q_i^{n+1}$ and $T_i^{n+1}$ to express the system as an update rule
+				\begin{align}
+						q_i^{n+1} &= - \kappa \frac{T_{i+1}^n - T_i^n}{\Delta x} \label{q_par_up}\\
+						T_i^{n+1} &= T_i^n - \frac{1}{v} \left( q_i^n - q_{i-1}^n \right), \label{T_par_up}
+				\end{align}
+				where $v = \Delta x / \Delta t$, is some characteristic velocity for the discrete grid.
+				
+				Equations \ref{q_par_up} and \ref{T_par_up} are the update rules for the parabolic form of heat conduction. 
+					Given initial conditions on temperature and boundary conditions on either temperature or heat flux is sufficient information to solve the \ac{PDE}.
+					
 			\subsubsection{Hyperbolic}
+			
+				For the hyperbolic case, we will discretize Equations \ref{flux} and \ref{temp}
+				\begin{gather}
+					\tau \frac{q_i^{n+1} - q_i^n}{\Delta t} + q_i^n =  \kappa \frac{T_{i+1}^n - T_i^n}{\Delta x} \label{q_hyp} \\
+					\frac{T_i^{n+1} - T_i^n}{\Delta t} = - \frac{q_i^n - q_{i-1}^n}{\Delta x} \label{T_hyp}
+				\end{gather}
+				Notice that the second term on the \ac{LHS} is evaluated at $n$ instead of $n+1$ as in the parabolic case.
+					This is an arbitrary choice and could work either way.
+					
+				Like the parabolic case, we will express Equations \ref{T_hyp} and \ref{q_hyp} as an update rule by solving for $q_i^{n+1}$ and $T_i^{n+1}$.
+				\begin{align}
+					q_i^{n+1} &= R q_i^n - \frac{c^2}{v} \left( T_{i+1}^n - T_i^n \right) \\
+					T_i^{n+1} &= T_i^n - \frac{1}{v} \left( q_i^n - q_{i-1}^n \right),
+				\end{align}
+				where $R = (\tau - \Delta t) / \tau$
+			
 		\subsection{Von Neumann Stability Analysis}
 			\subsubsection{Parabolic}
 			\subsubsection{Hyperbolic}
@@ -149,6 +221,13 @@
 	\begin{acronym}
 		\acro{MHD}{magnetohydrodynamics}
 		\acro{DR}{dispersion relation}
+		\acro{PDE}{partial differential equation}
+		\acro{FD}{finite-difference}
+		\acro{EFD}{explicit finite-difference}
+		\acro{IFD}{implicit finite-difference}
+		\acro{GPU}{graphics processing unit}
+		\acro{LHS}{left-hand side}
+		\acro{RHS}{right-hand side}
 	\end{acronym}
 	
 \end{document}
