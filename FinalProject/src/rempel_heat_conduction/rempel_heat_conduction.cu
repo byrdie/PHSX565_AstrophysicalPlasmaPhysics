@@ -290,12 +290,12 @@ void heat_1d_cpu_hyperbolic_step(float * T, float * T_d, float * q, float * x, u
 		float v2 = v_h * v_h;
 
 
-//		float kappa_0 = T0 * T0 * sqrt(T0);
-//		float kappa_1 = T1 * T1 * sqrt(T1);
-//		float kappa = (kappa_0 + kappa_1) / 2.0;
+		float kappa_0 = T0 * T0 * sqrt(T0);
+		float kappa_1 = T1 * T1 * sqrt(T1);
+		float kappa = (kappa_0 + kappa_1) / 2.0;
 
 
-				float kappa = 1.0;
+//				float kappa = 1.0;
 
 		//		 compute hyperbolic timescale
 		//		float tau = g*kappa;
@@ -466,7 +466,10 @@ void save_results(std::string path, float * T, float * q,  float * x){
 
 	// save state variables
 	fwrite(&Wt, sizeof(uint), 1, meta_f);
+	fwrite(&wt, sizeof(uint), 1, meta_f);
 	fwrite(&Lx, sizeof(uint), 1, meta_f);
+	fwrite(&dx, sizeof(float), 1, meta_f);
+	fwrite(&dt_p, sizeof(float), 1, meta_f);
 
 	// write data
 	fwrite(T, sizeof(float), L, T_f);

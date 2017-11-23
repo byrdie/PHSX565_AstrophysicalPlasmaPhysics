@@ -2,7 +2,35 @@
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\url}[1]{\href{#1}{#1}}
 
+\bibitem[{Anderson(1994)}]{cfd_book}
+Anderson, John~D., J.~D. 1994, Computational fluid dynamics : the basics with
+  applications, McGraw-Hill series in mechanical engineering (New York:
+  McGraw-Hill)
+
+\bibitem[{{Bingert} \& {Peter}(2011)}]{bingert_11}
+{Bingert}, S., \& {Peter}, H. 2011, \aap, 530, A112
+
+\bibitem[{{Courant} {et~al.}(1967){Courant}, {Friedrichs}, \& {Lewy}}]{cfl}
+{Courant}, R., {Friedrichs}, K., \& {Lewy}, H. 1967, IBM Journal of Research
+  and Development, 11, 215
+
+\bibitem[{{Gudiksen} {et~al.}(2011){Gudiksen}, {Carlsson}, {Hansteen}, {Hayek},
+  {Leenaarts}, \& {Mart{\'{\i}}nez-Sykora}}]{gudiksen_11}
+{Gudiksen}, B.~V., {Carlsson}, M., {Hansteen}, V.~H., {et~al.} 2011, \aap, 531,
+  A154
+
+\bibitem[{{Gudiksen} \& {Nordlund}(2005)}]{gudiksen_05}
+{Gudiksen}, B.~V., \& {Nordlund}, {\AA}. 2005, \apj, 618, 1020
+
 \bibitem[{{Rempel}(2017)}]{A}
 {Rempel}, M. 2017, \apj, 834, 10
+
+\bibitem[{{Snodin} {et~al.}(2006){Snodin}, {Brandenburg}, {Mee}, \&
+  {Shukurov}}]{snodin_06}
+{Snodin}, A.~P., {Brandenburg}, A., {Mee}, A.~J., \& {Shukurov}, A. 2006,
+  \mnras, 373, 643
+
+\bibitem[{{Spitzer}(1962)}]{spitzer_62}
+{Spitzer}, L. 1962, {Physics of Fully Ionized Gases}
 
 \end{thebibliography}
