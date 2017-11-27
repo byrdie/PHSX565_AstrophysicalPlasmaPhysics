@@ -1,0 +1,49 @@
+Thank you for submitting your manuscript.  I am attaching a different submission for you to review anonymously.  Please read the manuscript as you would any scientific paper and consider its success as a scientific paper.  It should explain what problem is being solved, why it matters, what progress has been made in the past and how.  It should then go on to explain its solution in sufficient detail to permit you to understand the solution.  In fact, it should be sufficient for you to reproduce the results, should you choose to do so: this is a fundamental tenet of the scientific method.  The explanation should be self-contained to a reasonable extent,
+and not simply pull in complex, unfamiliar results from other work without  explanatory description.
+
+You should then write a detailed review based on how it succeeds or fails as a scientific paper.  Your review should first summarize the objective of the paper and its basic flow.  It should then address the following aspects, at least,
+Is it written in clear, understandable language?
+Is the subject matter appropriate?  - i.e. focused on hydrodynamics and/or MHD.
+Did the writing assume any specialized knowledge?  Things that a general scientist (who has studied MHD) would be not expected to know?
+Did it clearly explain the background of the problem, and its relevance?
+Did the exposition of background cite references to previous work (do not worry about the format of these references).  Were any important references missing?
+Did it clearly explain how it reached its conclusion(s)?  Were any steps missing?
+Were there errors in the reasoning?  In the physics?  In the mathematics?
+Were the conclusions justified by the arguments?
+Your comments and criticisms should be specific.  Which aspects are unclear?  What should be explained in more detail?  How is the reasoning flawed?  Which assumptions need to be justified?  What logical gaps need to be filled in?   Suggest means by which the manuscript could be improved. Referee's reports typically run from 1-5 pages.  At the end it should render a judgment on suitability:
+Acceptable in its present form.  (No changes needed, perfect as it stands).
+Acceptable with minor revisions (enumerated in the report)
+Acceptable with major revisions (enumerated in the report)
+Unacceptable in the present form - i.e. requires substantial rewriting.
+
+Please return your report to me electronically by 5:00PM Wed. Dec. 6
+Your report will be graded equivalent to a homework assignment and then sent anonymously to the author.  You must not reveal your identify as referee to
+the author.  Nor will it be revealed by the editor (me).
+
+For further clarification and motivation, I include below a version of the guidelines distributed to all referees by The Astrophysical Journal.
+
+Referee reports 
+Referee reports are sent to the authors. You should bear this in mind when preparing your report.
+
+The identity of referees is strictly confidential and we ask that you do not transmit your report directly to the authors.
+
+We also ask that you do not disclose your identity to the authors or discuss the papers you have reviewed with colleagues unless they have been published.
+
+Guidelines for referees
+In your report you should address the following key points. The motivation and relevance of the work are particularly important.
+Technical
+
+Scientific merit: Is the work scientifically rigorous, accurate and correct?
+Clarity: Are ideas expressed clearly and concisely? Are the concepts understandable? Is the discussion written in a way that is easy to read and understand?
+
+Quality
+
+Motivation: Does the problem considered have a sound motivation? Any paper should clearly demonstrate the scientific interest of its results. Papers should not rely solely on previous literature or novelty to motivate publication.
+
+Presentation
+
+Title: Is it adequate and appropriate for the content of the article?
+Abstract: Does it contain the essential information of the article? Is it complete? Is it suitable for inclusion by itself in an abstracting service?
+Diagrams, figures, tables and captions: Are they essential and clear?
+Text and mathematics: Are they brief but still clear? If you recommend shortening, please suggest what should be omitted.
+Conclusion: Does the paper contain a carefully written conclusion, summarizing what has been learned and why it is interesting and useful?
