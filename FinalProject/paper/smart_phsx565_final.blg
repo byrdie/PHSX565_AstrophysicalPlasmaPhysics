@@ -6,45 +6,45 @@ Database file #1: smart_phsx565_finalNotes.bib
 Database file #2: sources.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Warning--empty publisher in spitzer_62
-You've used 8 entries,
+You've used 9 entries,
             3222 wiz_defined-function locations,
-            717 strings with 5816 characters,
-and the built_in function-call counts, 3233 in all, are:
-= -- 268
-> -- 196
-< -- 5
-+ -- 66
-- -- 68
-* -- 244
-:= -- 584
-add.period$ -- 8
-call.type$ -- 8
-change.case$ -- 44
-chr.to.int$ -- 8
-cite$ -- 9
-duplicate$ -- 138
-empty$ -- 244
-format.name$ -- 80
-if$ -- 665
+            725 strings with 6031 characters,
+and the built_in function-call counts, 3639 in all, are:
+= -- 305
+> -- 218
+< -- 6
++ -- 73
+- -- 75
+* -- 274
+:= -- 654
+add.period$ -- 9
+call.type$ -- 9
+change.case$ -- 49
+chr.to.int$ -- 9
+cite$ -- 10
+duplicate$ -- 156
+empty$ -- 273
+format.name$ -- 91
+if$ -- 751
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 8
-newline$ -- 29
-num.names$ -- 32
-pop$ -- 65
+missing$ -- 9
+newline$ -- 32
+num.names$ -- 36
+pop$ -- 73
 preamble$ -- 1
-purify$ -- 44
+purify$ -- 49
 quote$ -- 0
-skip$ -- 116
+skip$ -- 131
 stack$ -- 0
-substring$ -- 122
+substring$ -- 142
 swap$ -- 0
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 66
+type$ -- 75
 warning$ -- 1
-while$ -- 30
+while$ -- 34
 width$ -- 0
-write$ -- 83
+write$ -- 93
 (There was 1 warning)

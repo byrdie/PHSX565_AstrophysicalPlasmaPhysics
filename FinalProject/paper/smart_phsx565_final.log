@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.11.8)  22 NOV 2017 23:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.11.8)  14 DEC 2017 02:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -770,126 +770,124 @@ LaTeX Info: Redefining \nameref on input line 14.
 Class revtex4-1 Info: Taking \maketitle back from hyperref on input line 14.
 \openout3 = `smart_phsx565_finalNotes.bib'.
 
-LaTeX Font Info:    Try loading font information for U+lasy on input line 25.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 25.
+LaTeX Font Info:    Try loading font information for U+msa on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 25.
+LaTeX Font Info:    Try loading font information for U+msb on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 Package acronym Info: Label `acro:MHD' newly defined as it shall be overridden
-although it is yet undefined on input line 28.
+although it is yet undefined on input line 33.
 Package acronym Info: Label `acro:EFD' newly defined as it shall be overridden
-although it is yet undefined on input line 32.
+although it is yet undefined on input line 37.
 Package acronym Info: Label `acro:MPP' newly defined as it shall be overridden
-although it is yet undefined on input line 32.
+although it is yet undefined on input line 37.
 Package acronym Info: Label `acro:PDE' newly defined as it shall be overridden
-although it is yet undefined on input line 38.
+although it is yet undefined on input line 43.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 Package acronym Info: Label `acro:DR' newly defined as it shall be overridden
-although it is yet undefined on input line 145.
+although it is yet undefined on input line 158.
  [2]
 Package acronym Info: Label `acro:FD' newly defined as it shall be overridden
-although it is yet undefined on input line 205.
+although it is yet undefined on input line 227.
 Package acronym Info: Label `acro:IFD' newly defined as it shall be overridden
-although it is yet undefined on input line 211.
+although it is yet undefined on input line 233.
 Package acronym Info: Label `acro:GPU' newly defined as it shall be overridden
-although it is yet undefined on input line 212.
+although it is yet undefined on input line 234.
+ [3]
 Package acronym Info: Label `acro:LHS' newly defined as it shall be overridden
-although it is yet undefined on input line 245.
+although it is yet undefined on input line 307.
 Package acronym Info: Label `acro:CFL' newly defined as it shall be overridden
-although it is yet undefined on input line 261.
+although it is yet undefined on input line 323.
 Package acronym Info: Label `acro:VNSA' newly defined as it shall be overridden
 
-although it is yet undefined on input line 261.
- [3]
-Underfull \hbox (badness 2042) in paragraph at lines 320--321
+although it is yet undefined on input line 323.
+ [4]
+Underfull \hbox (badness 2042) in paragraph at lines 382--383
 []\OT1/cmr/m/n/10 While $\OML/cmm/m/it/10 q[]$ \OT1/cmr/m/n/10 and $\OML/cmm/m/
 it/10 T[]$ \OT1/cmr/m/n/10 ob-vi-ously sat-isfy the dis-crete
  []
 
 
-Overfull \hbox (3.5222pt too wide) in paragraph at lines 343--343
+Overfull \hbox (3.5222pt too wide) in paragraph at lines 405--405
 [] 
  []
 
 Package acronym Info: Label `acro:RHS' newly defined as it shall be overridden
-although it is yet undefined on input line 344.
-[4]
-Overfull \hbox (6.22522pt too wide) in paragraph at lines 397--397
+although it is yet undefined on input line 406.
+
+Overfull \hbox (6.22522pt too wide) in paragraph at lines 459--459
 [] 
  []
 
-<figures/T_linear.pdf, id=241, 361.35pt x 234.8775pt>
-File: figures/T_linear.pdf Graphic file (type pdf)
-
-<use figures/T_linear.pdf>
-Package pdftex.def Info: figures/T_linear.pdf used on input line 433.
-(pdftex.def)             Requested size: 245.26653pt x 159.42429pt.
-
-<figures/T_spitzer.pdf, id=242, 361.35pt x 234.8775pt>
+[5] <figures/T_spitzer.pdf, id=278, 361.35pt x 234.8775pt>
 File: figures/T_spitzer.pdf Graphic file (type pdf)
 
 <use figures/T_spitzer.pdf>
-Package pdftex.def Info: figures/T_spitzer.pdf used on input line 440.
+Package pdftex.def Info: figures/T_spitzer.pdf used on input line 507.
 (pdftex.def)             Requested size: 245.26653pt x 159.42429pt.
 
+Underfull \hbox (badness 1590) in paragraph at lines 512--514
+[]\OT1/cmr/m/n/10 In Fig-ure []3[], we can see the dif-fer-ence be-tween
+ []
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+<figures/T_error.pdf, id=281, 361.35pt x 228.855pt>
+File: figures/T_error.pdf Graphic file (type pdf)
+ <use figures/T_error.pdf>
+Package pdftex.def Info: figures/T_error.pdf used on input line 517.
+(pdftex.def)             Requested size: 245.26653pt x 155.33647pt.
 
-[5 <./figures/T_linear.pdf>]
-
-LaTeX Warning: A float is stuck (cannot be placed) on input line 450.
+(./smart_phsx565_final.bbl) [6 <./figures/T_spitzer.pdf> <./figures/T_error.pdf
 
 
-LaTeX Warning: A float is stuck (cannot be placed) on input line 450.
-
-
-Class revtex4-1 Warning: Deferred float stuck during \clearpage processing.
-
-(./smart_phsx565_final.bbl) [6 <./figures/T_spitzer.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 477.
-
-(./smart_phsx565_final.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 477.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 477.
+pdfTeX warning: /usr/bin/pdflatex (file ./figures/T_error.pdf): PDF inclusion: 
+multiple pdfs with page group included in a single page
+>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 565.
+ (./smart_phsx565_final.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 565.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 565.
 Package rerunfilecheck Info: File `smart_phsx565_final.out' has not changed.
-(rerunfilecheck)             Checksum: 7D730B98E302D6E59B09A7E153A8215F;1104.
+(rerunfilecheck)             Checksum: E8E75CA162B0F13A509FA08424B547AC;1159.
  ) 
 Here is how much of TeX's memory you used:
- 18870 strings out of 493029
- 335769 string characters out of 6136234
- 437052 words of memory out of 5000000
- 21982 multiletter control sequences out of 15000+600000
- 8510 words of font info for 34 fonts, out of 8000000 for 9000
+ 18989 strings out of 493029
+ 338118 string characters out of 6136234
+ 445011 words of memory out of 5000000
+ 22098 multiletter control sequences out of 15000+600000
+ 11523 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,15n,54p,436b,383s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,15n,54p,906b,617s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on smart_phsx565_final.pdf (6 pages, 243535 bytes).
+xmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmti9.pfb>
+Output written on smart_phsx565_final.pdf (6 pages, 264094 bytes).
 PDF statistics:
- 362 PDF objects out of 1000 (max. 8388607)
- 329 compressed objects within 4 object streams
- 103 named destinations out of 1000 (max. 500000)
- 159 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 391 PDF objects out of 1000 (max. 8388607)
+ 355 compressed objects within 4 object streams
+ 98 named destinations out of 1000 (max. 500000)
+ 167 words of extra memory for PDF output out of 10000 (max. 10000000)
 

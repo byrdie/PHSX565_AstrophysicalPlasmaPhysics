@@ -33,7 +33,7 @@ const uint Nx = 1;
 const uint bt = 4;
 
 // downsampling factor
-const uint wt = 256;
+const uint wt = 1024;
 
 // final size after downsampling
 const uint Wt =  1024;

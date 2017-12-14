@@ -1,0 +1,175 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\title{Kelvin-Helmholtz instability in rotating, accreting, magnetic neutron stars - Referee Report}
+\author{Roy Smart}
+\begin{document}
+	
+	\maketitle
+	
+	\section{Introduction}
+
+		This is a review of the paper ``Kelvin-Helmholtz instability in rotating, accreting, magnetic neutron stars'' by Sulov Chalise, hereafter known as C17.
+		This was done for the class: PHSX 565 Introduction to Astrophysical Plasma Physics by Dana Longcope.
+	
+	\section{Summary}
+	
+		A star orbiting in close proximity to a rotating neutron star will shed its outer layers onto the neutron star, creating an accretion disk. 
+		The accretion disk and the neutron star likely have different rotation rates, resulting in a velocity discontinuity at the interface between the accretion disk and the atmosphere of the neutron star.
+		This type of discontinuity often leads to a Kelvin-Helmholtz (KH) instabilty, which is the focus of this paper.
+		
+		C17 describes the neutron star and accretion disk system as a plane interface between two fluids with different speeds.
+		This representation is used to derive the dispersion relations and stability conditions for both neutral and magnetic fluids.
+		It is found that the magnetic case results in a larger region of instability.
+		
+		This work is important for understanding the angular momentum transfer between the neutron star and its companion, which will allow for better radiation models of neutron stars.
+	
+	\section{Feedback}
+		\subsection{Technical}
+			\subsubsection{Scientific Merit}
+			
+				The scientfic merit of this work is excellent. 
+				Understanding how neutron stars lose angular momentum is important for describing the period of the pulsating X-rays emitted by neutron stars.
+			
+			\subsubsection{Clarity}
+			
+				\begin{itemize}
+					\item The exact neutron star system under consideration is hard to understand for someone who is not familiar with neutron star binaries. In the Introduction we have:
+					\begin{quote}
+						For accretion, there exists a region where the material of disk co-rotates with the magnetosphere. But away from this region there is a velocity difference between the fluids of the disk and the magnetosphere.
+					\end{quote}
+					The reviewer would've really liked to see a figure detailing the regions described in the quote above, and how they relate to the system detailed in FIG. 1.
+					If that is too much, please just explicitly describe what the ``top'' and ``bottom'' fluids are supposed to represent, e.g. co-rotation region and accretion disk.
+					
+					\item In the last sentence of Section III.B
+					\begin{quote}
+						In this region of instability k-modes of the waves can grow exponentially.
+					\end{quote}
+					``k-modes'' are not discussed before this. These should be introduced before describing their behavior. 
+				\end{itemize}
+			
+		\subsection{Quality}
+			\subsubsection{Motivation}
+			
+				\begin{itemize}
+					\item The reviewer would've liked to see more motivation generated from the literature.
+					For example, the statement: ``... the transfer of angular momentum from the accretion disk to the neutron star is of vital importance to model the radiation of neutron star''-find one or (preferably) more sources to back up this statement, and use them to describe the relationship of this paper to the current body of research.
+					
+				\end{itemize}
+			
+		\subsection{Presentation}
+			\subsubsection{Title}
+			
+				\begin{itemize}
+					\item Title is okay. Since the focus of this paper is deriving the stability conditions (not modeling the entire KH instability), some mention of that task in the title would be better.
+				\end{itemize}
+			
+			\subsubsection{Abstract}
+			
+				\begin{itemize}
+					\item Acceptable.
+				\end{itemize}
+			
+			\subsubsection{Diagrams, Figures, Tables and Captions}
+			
+				\begin{itemize}
+					\item Figures
+					\begin{itemize}
+						\item Acceptable.
+					\end{itemize}
+					\item Captions
+					\begin{itemize}
+						\item There are no captions on any figures. Move all descriptions of figures from body into the caption, and reference figure in text body.
+					\end{itemize}
+				\end{itemize}
+			
+			\subsubsection{Text and Mathematics}
+			
+				\begin{itemize}
+					\item Text
+					\begin{itemize}
+						\item Not all variables in the text are rendered using math mode immediately following Figure 1.
+						
+						\item Paragraph indents are missing, hard to read. Is this intended?
+						
+					\end{itemize}
+					\item Mathematics
+					\begin{itemize}
+						
+						\item Not all equations are numbered. This would've been helpful to the reviewer to describe which equations to fix.
+						
+						\item Before Equation 5, you make some assumption like 
+						\begin{align}
+							\mathbf{u}_0 = u_0 \hat{x}
+						\end{align}
+						but do not explain to the reader.
+						
+						\item In Equation 5 you use the expression for the isothermal sound speed without stating it. 
+						
+						\item In the second equation of Section III.A.2, 
+						\begin{align}
+							u_{1,i} = A_i \exp i \left[ k_x x + k_y y + k_z z - \omega t \right],
+						\end{align}
+						you started using summation notation. Give a heads-up to the reader. 
+						
+						\item In the fourth equation of Section III.A.2
+						\begin{align}
+							- i \omega \mathbf{u}_1 + \rho_0 u_0 (i k_x A_i)e^{i[k_x x + k_y y + k_z z - \omega t]} + i k_i p_1 = 0
+						\end{align}
+						The first term is a vector but the remaining terms are scalars. Possibly you meant $\mathbf{u}_1 \rightarrow u_{1,i}$.
+						
+						\item In Equation 7 you used $\gamma$ without defining it first.
+						
+						\item In Equation 9, the third term is a vector, but the first and second terms are scalar. Possibly you mean $\mathbf{k}_\parallel \rightarrow |\mathbf{k}_\parallel|$. 
+						This problem pollutes all equations up to Equation 17.
+						
+						\item Also in Equation 9, you introduce a variable $\phi$ without first explaining it.
+						
+						\item After Equation 19, describe how real/imaginary relates to instability.
+						
+						\item Define $\mu_0$.
+						
+						\item Before Equation 33, why assume no reflection of MHD waves at interface? Simplicity?
+						
+					\end{itemize}
+				\end{itemize}
+			
+			\subsubsection{Conclusion}
+			
+				\begin{itemize}
+					\item Include a sentence connecting the ``wider region of instability'' to the X-ray period fluctuations; i.e. how does the magnetohydrodynamic model allow for better prediction of X-ray period fluctuations? In what case is the hydrodynamic model acceptable?
+				\end{itemize}
+			
+			\subsubsection{References}
+			
+				\begin{itemize}
+					\item The introduction has too few references as mentioned above. 
+					Many sentences in the second and third paragraph need sources, in particular: P2S3 and P2S4 (Paragraph 2, Sentence 4).
+				\end{itemize}
+			
+		\subsection{Class-specific}
+			\subsubsection{Appropriate Subject Matter}
+			
+				\begin{itemize}
+					\item This is an appropriate subject matter for this class. 
+					The paper applies ideas learned in class such as linear analysis, dispersion relations and stability. 
+				\end{itemize}
+			
+			\subsubsection{Assuming Specialized Knowledge}
+			
+				\begin{itemize}
+					\item Anyone who took the class should be able to understand this paper.
+				\end{itemize}
+			
+	\section{Judgement}
+	
+		The mathematical procedure carried out in this work seems logically sound and useful.
+		Since this work only had flaws in connecting it to the existing literature and superficial mathematical errors, this paper is judged as: \textbf{acceptable with minor revisions} (enumerated in the report).
+	
+		
+	
+\end{document}

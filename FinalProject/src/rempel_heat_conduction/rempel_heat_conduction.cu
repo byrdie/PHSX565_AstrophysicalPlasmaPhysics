@@ -395,6 +395,7 @@ void heat_1d_cpu_parabolic_step(float * T, float * T_d, float * q, float * x, ui
 		float x1 = x[i + 1];
 
 		float kappa = (T0 * T0 * sqrt(T0) + T1 * T1 * sqrt(T1)) / 2.0;
+//		float kappa = 1.0;
 
 
 		float dt = dt_p;

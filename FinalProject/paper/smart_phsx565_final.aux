@@ -17,13 +17,16 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \AC@reset@newl@bel
+\citation{A}
 \citation{gudiksen_11}
 \citation{bingert_11}
 \citation{gudiksen_05}
 \citation{A}
 \citation{A}
 \citation{A}
-\newlabel{FirstPage}{{}{1}{}{Doc-Start}{}}
+\citation{A}
+\newlabel{FirstPage}{{}{1}{}{section*.1}{}}
+\@writefile{toc}{\contentsline {abstract}{ABSTRACT}{1}{section*.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
 \AC@undonewlabel{acro:MHD}
 \newlabel{acro:MHD}{{1}{1}{Introduction}{section.1}{}}
@@ -43,45 +46,53 @@
 \acronymused{PDE}
 \acronymused{PDE}
 \acronymused{EFD}
+\acronymused{PDE}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Background}{1}{section.2}}
+\newlabel{back_sec}{{2}{1}{Background}{section.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Classification of Second-order PDEs}{1}{subsection.2.1}}
 \acronymused{PDE}
 \acronymused{PDE}
 \newlabel{gen_pde}{{1}{1}{Classification of Second-order PDEs}{equation.2.1}{}}
 \acronymused{PDE}
 \acronymused{PDE}
-\acronymused{PDE}
-\acronymused{PDE}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Parabolic Heat Conduction}{1}{subsection.2.2}}
-\newlabel{par}{{4}{1}{Parabolic Heat Conduction}{equation.2.4}{}}
-\newlabel{flux_p}{{5}{1}{Parabolic Heat Conduction}{equation.2.5}{}}
-\newlabel{temp_p}{{6}{1}{Parabolic Heat Conduction}{equation.2.6}{}}
 \citation{snodin_06}
 \citation{A}
 \citation{A}
 \citation{A}
+\citation{A}
 \citation{spitzer_62}
+\acronymused{PDE}
+\acronymused{PDE}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Parabolic Heat Conduction}{2}{subsection.2.2}}
+\newlabel{par}{{4}{2}{Parabolic Heat Conduction}{equation.2.4}{}}
+\newlabel{flux_p}{{5}{2}{Parabolic Heat Conduction}{equation.2.5}{}}
+\newlabel{temp_p}{{6}{2}{Parabolic Heat Conduction}{equation.2.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Hyperbolic Heat Conduction}{2}{subsection.2.3}}
+\newlabel{hyp_back_sec}{{2.3}{2}{Hyperbolic Heat Conduction}{subsection.2.3}{}}
 \newlabel{flux}{{7}{2}{Hyperbolic Heat Conduction}{equation.2.7}{}}
 \newlabel{temp}{{8}{2}{Hyperbolic Heat Conduction}{equation.2.8}{}}
-\newlabel{wave}{{11}{2}{Hyperbolic Heat Conduction}{equation.2.11}{}}
-\newlabel{vp}{{12}{2}{Hyperbolic Heat Conduction}{equation.2.12}{}}
-\newlabel{v}{{13}{2}{Hyperbolic Heat Conduction}{equation.2.13}{}}
+\newlabel{wave}{{9}{2}{Hyperbolic Heat Conduction}{equation.2.9}{}}
+\newlabel{vp}{{10}{2}{Hyperbolic Heat Conduction}{equation.2.10}{}}
+\newlabel{v}{{11}{2}{Hyperbolic Heat Conduction}{equation.2.11}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Linear Dispersion Relations}{2}{section.3}}
 \newlabel{linear_sec}{{3}{2}{Linear Dispersion Relations}{section.3}{}}
 \AC@undonewlabel{acro:DR}
 \newlabel{acro:DR}{{3}{2}{Linear Dispersion Relations}{section.3}{}}
 \acronymused{DR}
 \acronymused{DR}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Parabolic}{2}{subsection.3.1}}
+\citation{1965PhFl....8.2182H}
+\citation{cfd_book}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Parabolic}{3}{subsection.3.1}}
+\newlabel{disp_par_sec}{{3.1}{3}{Parabolic}{subsection.3.1}{}}
 \acronymused{DR}
 \acronymused{DR}
 \acronymused{DR}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Hyperbolic}{2}{subsection.3.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Hyperbolic}{3}{subsection.3.2}}
+\newlabel{disp_hyp_sec}{{3.2}{3}{Hyperbolic}{subsection.3.2}{}}
 \acronymused{DR}
-\newlabel{re_ineq}{{20}{2}{Hyperbolic}{equation.3.20}{}}
-\citation{cfl}
+\newlabel{re_ineq}{{20}{3}{Hyperbolic}{equation.3.20}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Numerical Implementation}{3}{section.4}}
+\newlabel{num_sec}{{4}{3}{Numerical Implementation}{section.4}{}}
 \acronymused{PDE}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Explicit Finite-difference}{3}{subsection.4.1}}
 \acronymused{PDE}
@@ -102,21 +113,24 @@
 \newlabel{acro:GPU}{{4.1}{3}{Explicit Finite-difference}{subsection.4.1}{}}
 \acronymused{GPU}
 \acronymused{EFD}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visualization of the staggered grid on which the temperature $T$ and the the heat flux $q$ are evaluated. The subscript $L$ corresponds to the left boundary and $R$ corresponds to the right boundary.}}{3}{figure.1}}
+\newlabel{staggered}{{1}{3}{Visualization of the staggered grid on which the temperature $T$ and the the heat flux $q$ are evaluated. The subscript $L$ corresponds to the left boundary and $R$ corresponds to the right boundary}{figure.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Parabolic}{3}{subsubsection.4.1.1}}
-\newlabel{q_par}{{27}{3}{Parabolic}{equation.4.27}{}}
-\newlabel{T_par}{{28}{3}{Parabolic}{equation.4.28}{}}
-\newlabel{q_par_up}{{29}{3}{Parabolic}{equation.4.29}{}}
-\newlabel{T_par_up}{{30}{3}{Parabolic}{equation.4.30}{}}
-\acronymused{PDE}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Hyperbolic}{3}{subsubsection.4.1.2}}
-\newlabel{q_hyp}{{31}{3}{Hyperbolic}{equation.4.31}{}}
-\newlabel{T_hyp}{{32}{3}{Hyperbolic}{equation.4.32}{}}
-\AC@undonewlabel{acro:LHS}
-\newlabel{acro:LHS}{{4.1.2}{3}{Hyperbolic}{equation.4.32}{}}
-\acronymused{LHS}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Von Neumann Stability Analysis}{3}{subsection.4.2}}
-\newlabel{vnsa_sec}{{4.2}{3}{Von Neumann Stability Analysis}{subsection.4.2}{}}
+\citation{cfl}
 \citation{cfd_book}
+\newlabel{q_par}{{24}{4}{Parabolic}{equation.4.24}{}}
+\newlabel{T_par}{{25}{4}{Parabolic}{equation.4.25}{}}
+\newlabel{q_par_up}{{26}{4}{Parabolic}{equation.4.26}{}}
+\newlabel{T_par_up}{{27}{4}{Parabolic}{equation.4.27}{}}
+\acronymused{PDE}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Hyperbolic}{4}{subsubsection.4.1.2}}
+\newlabel{q_hyp}{{28}{4}{Hyperbolic}{equation.4.28}{}}
+\newlabel{T_hyp}{{29}{4}{Hyperbolic}{equation.4.29}{}}
+\AC@undonewlabel{acro:LHS}
+\newlabel{acro:LHS}{{4.1.2}{4}{Hyperbolic}{equation.4.29}{}}
+\acronymused{LHS}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Von Neumann Stability Analysis}{4}{subsection.4.2}}
+\newlabel{vnsa_sec}{{4.2}{4}{Von Neumann Stability Analysis}{subsection.4.2}{}}
 \AC@undonewlabel{acro:CFL}
 \newlabel{acro:CFL}{{4.2}{4}{Von Neumann Stability Analysis}{subsection.4.2}{}}
 \acronymused{CFL}
@@ -130,30 +144,32 @@
 \acronymused{PDE}
 \acronymused{PDE}
 \acronymused{PDE}
-\newlabel{e1}{{42}{4}{Von Neumann Stability Analysis}{equation.4.42}{}}
-\newlabel{e2}{{43}{4}{Von Neumann Stability Analysis}{equation.4.43}{}}
-\newlabel{e3}{{44}{4}{Von Neumann Stability Analysis}{equation.4.44}{}}
-\newlabel{e4}{{45}{4}{Von Neumann Stability Analysis}{equation.4.45}{}}
-\newlabel{r1}{{47}{4}{Von Neumann Stability Analysis}{equation.4.47}{}}
-\newlabel{r2}{{48}{4}{Von Neumann Stability Analysis}{equation.4.48}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Parabolic Analysis}{4}{subsubsection.4.2.1}}
-\newlabel{par_mat}{{53}{4}{Parabolic Analysis}{equation.4.53}{}}
-\AC@undonewlabel{acro:RHS}
-\newlabel{acro:RHS}{{4.2.1}{4}{Parabolic Analysis}{equation.4.53}{}}
-\acronymused{RHS}
-\newlabel{par_ev}{{54}{4}{Parabolic Analysis}{equation.4.54}{}}
+\newlabel{e1}{{39}{4}{Von Neumann Stability Analysis}{equation.4.39}{}}
+\newlabel{e2}{{40}{4}{Von Neumann Stability Analysis}{equation.4.40}{}}
+\newlabel{e3}{{41}{4}{Von Neumann Stability Analysis}{equation.4.41}{}}
+\newlabel{e4}{{42}{4}{Von Neumann Stability Analysis}{equation.4.42}{}}
 \citation{cfd_book}
-\citation{A}
-\newlabel{par_cfl_2}{{58}{5}{Parabolic Analysis}{equation.4.58}{}}
+\newlabel{r1}{{44}{5}{Von Neumann Stability Analysis}{equation.4.44}{}}
+\newlabel{r2}{{45}{5}{Von Neumann Stability Analysis}{equation.4.45}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Parabolic Analysis}{5}{subsubsection.4.2.1}}
+\newlabel{par_mat}{{50}{5}{Parabolic Analysis}{equation.4.50}{}}
+\AC@undonewlabel{acro:RHS}
+\newlabel{acro:RHS}{{4.2.1}{5}{Parabolic Analysis}{equation.4.50}{}}
+\acronymused{RHS}
+\newlabel{par_ev}{{51}{5}{Parabolic Analysis}{equation.4.51}{}}
+\newlabel{par_cfl_2}{{54}{5}{Parabolic Analysis}{equation.4.54}{}}
 \acronymused{RHS}
 \acronymused{RHS}
-\newlabel{par_cfl}{{59}{5}{Parabolic Analysis}{equation.4.59}{}}
+\newlabel{par_cfl}{{55}{5}{Parabolic Analysis}{equation.4.55}{}}
 \acronymused{CFL}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Hyperbolic Analysis}{5}{subsubsection.4.2.2}}
-\newlabel{hyp_mat}{{62}{5}{Hyperbolic Analysis}{equation.4.62}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{5}{section.5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Constant heat conduction test. Different colors denote the solution at uniform timesteps.}}{5}{figure.1}}
-\newlabel{linear_test}{{1}{5}{Constant heat conduction test. Different colors denote the solution at uniform timesteps}{figure.1}{}}
+\newlabel{hyp_mat}{{58}{5}{Hyperbolic Analysis}{equation.4.58}{}}
+\citation{A}
+\citation{A}
+\citation{A}
+\citation{A}
+\citation{A}
+\citation{A}
 \citation{A}
 \bibdata{smart_phsx565_finalNotes,sources}
 \bibcite{cfd_book}{{1}{1994}{{Anderson}}{{}}}
@@ -161,13 +177,24 @@
 \bibcite{cfl}{{3}{1967}{{{Courant} {et~al.}}}{{{Courant}, {Friedrichs}, \& {Lewy}}}}
 \bibcite{gudiksen_11}{{4}{2011}{{{Gudiksen} {et~al.}}}{{{Gudiksen}, {Carlsson}, {Hansteen}, {Hayek}, {Leenaarts}, \& {Mart{\'{\i }}nez-Sykora}}}}
 \bibcite{gudiksen_05}{{5}{2005}{{{Gudiksen} \& {Nordlund}}}{{}}}
-\bibcite{A}{{6}{2017}{{Rempel}}{{}}}
-\bibcite{snodin_06}{{7}{2006}{{{Snodin} {et~al.}}}{{{Snodin}, {Brandenburg}, {Mee}, \& {Shukurov}}}}
-\bibcite{spitzer_62}{{8}{1962}{{Spitzer}}{{}}}
+\bibcite{1965PhFl....8.2182H}{{6}{1965}{{{Harlow} \& {Welch}}}{{}}}
+\bibcite{A}{{7}{2017}{{Rempel}}{{}}}
+\bibcite{snodin_06}{{8}{2006}{{{Snodin} {et~al.}}}{{{Snodin}, {Brandenburg}, {Mee}, \& {Shukurov}}}}
+\bibcite{spitzer_62}{{9}{1962}{{Spitzer}}{{}}}
 \bibstyle{apj}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Spitzer heat conduction test. Different colors denote the solution at uniform timesteps.}}{6}{figure.2}}
-\newlabel{spitzer_test}{{2}{6}{Spitzer heat conduction test. Different colors denote the solution at uniform timesteps}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{6}{section.5}}
+\newlabel{res_sec}{{5}{6}{Results}{section.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Spitzer heat conduction test, $\kappa = T^{5/2}$, for times: 0.0 (blue), 0.125 (orange), 0.25 (green), 0.5 (red), and 1 (purple).}}{6}{figure.2}}
+\newlabel{spitzer_test}{{2}{6}{Spitzer heat conduction test, $\kappa = T^{5/2}$, for times: 0.0 (blue), 0.125 (orange), 0.25 (green), 0.5 (red), and 1 (purple)}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Difference between the parabolic and hyperbolic solutions plotted for the same times and parameters as Figure \ref  {spitzer_test}. }}{6}{figure.3}}
+\newlabel{error}{{3}{6}{Difference between the parabolic and hyperbolic solutions plotted for the same times and parameters as Figure \ref {spitzer_test}}{figure.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{6}{section.6}}
+\acronymused{EFD}
+\acronymused{EFD}
+\acronymused{VNSA}
+\acronymused{VNSA}
+\acronymused{EFD}
+\acronymused{EFD}
 \newacro{MHD}[\AC@hyperlink{MHD}{MHD}]{magnetohydrodynamics}
 \newacro{DR}[\AC@hyperlink{DR}{DR}]{dispersion relation}
 \newacro{PDE}[\AC@hyperlink{PDE}{PDE}]{partial differential equation}

@@ -13,13 +13,18 @@
 
 \begin{document}
 	
+	\defcitealias{A}{R17}
+	
 	\title{Hyperbolic Heat Conduction Using First-Order Explict Finite Difference}
 	\author{Roy Smart}
-	%\author{Dana Longcope}
 	\affil{Department of Physics, Montana State University, Bozeman MT, 59717, USA}
+	\author{Nina Carlton}
+	\affil{Dog, Department of Home Security, 412 W. Hayes St. Apt. A, Bozeman MT, 59715, USA}
 	
 	\begin{abstract}
-		
+		Traditional treatment of heat conduction has been shown to be computationally prohibitive in models of the solar atmosphere.
+			In the interest of alleviating this issue, we review an approximate model of heat conduction investigated by \cite{A} that neglects high-frequency behavior in favor of computational efficiency by transforming the traditional, parabolic heat equation into a hyperbolic equation. In this work we will characterize the linear behavior of this hyperbolic model to understand how it affects high frequencies. We also propose a first-order explicit finite-difference approximation of both the parabolic and hyperbolic systems, and estimate the computational gains offered by the hyperbolic formulation using Von Neumann stability analysis. Finally, we present results of a code that applies our finite-difference approximation to a system representative of a flare event in the solar corona and quantify the difference between the parabolic and hyperbolic solutions.
+			
 	\end{abstract}
 	
 	\section{Introduction}
@@ -37,12 +42,16 @@
 		This work will focus on modeling heat conduction only, no other terms from the fluid equations will be considered.
 			However, we will consider two models of heat conduction, the first being the classic model of diffusion which is a parabolic \ac{PDE}.
 			The second model we will investigate will involve adding an additional term to the parabolic model which will transform it into a hyperbolic \ac{PDE}.
-			This hyperbolic model was recently used by \cite{A} in the MURaM comprehensive model of the solar atmosphere and was shown to be much more computationally efficient than a corresponding parabolic solution.
-			The main goal of this work is to recreate the results of \cite{A} using first-order \ac{EFD} and to ascertain whether there is any performance benefit to be offered using the more complex hyperbolic formulation.
+			This hyperbolic model was recently used by \cite{A} (hereafter known as \citetalias{A}) in the MURaM comprehensive model of the solar atmosphere and was shown to be much more computationally efficient than a corresponding parabolic solution.
+			The main goal of this work is to recreate the results of \citetalias{A} using first-order \ac{EFD} and to ascertain whether there is any performance benefit to be offered using the more complex hyperbolic formulation.
 		
+		This work will be organized as follows, in Section \ref{back_sec} we will develop the background on these two forms of heat conduction and motivate the introduction of a hyperbolic heat conduction formulation.
+			In Section \ref{linear_sec}, we will consider the linear forms of the heat conduction equations, and use them to derive dispersion relations for these \acp{PDE}.
+			For Section \ref{num_sec} we will develop numerical approximations to the parabolic and hyperbolic forms of heat conduction and analyze the stability of these approximations.
+			Finally, in Section \ref{res_sec} we will apply our numerical approximations to a simulation, intended to recreate the conditions of the solar corona, and comment on the validity of the expressions found in the previous sections.
+			
 	
-	
-	\section{Background}
+	\section{Background} \label{back_sec}
 		\subsection{Classification of Second-order PDEs}
 			Second-order PDEs are organized into groups known as parabolic, hyperbolic and elliptic.
 				This classification describes how a disturbance (information) propagates throughout the domain of a \ac{PDE}.
@@ -50,14 +59,14 @@
 				\begin{align}
 					A \partial_{xx} \psi + 2 B \partial_{xt} \psi + C \partial_{tt} \psi + D \partial_x \psi + E \partial_t \psi = 0 \label{gen_pde}
 				\end{align}
-				where $\partial_y = \partial / \partial y$, $\partial_{yy} = \partial^2 / \partial y^2$, etc.
+				where $\partial_x = \partial / \partial x$, $\partial_{yy} = \partial^2 / \partial y^2$, etc.
 				The classification of a second-order \ac{PDE} involves only the coefficients $A$, $B$ and $C$ of Equation \ref{gen_pde}.
 				
 			Hyperbolic \acp{PDE} are defined by the relation 
 				\begin{align}
 					B^2 - AC > 0.
 				\end{align}
-				These PDEs are the simplest to understand, since they have properties we have come to expect from the physical world, namely finite information travel time.
+				These PDEs are the simplest to understand, since information travel time is finite.
 				A disturbance in the solution of a hyperbolic PDE can only influence the solution in a ``light cone'' centered around the disturbance.
 				The wave equation is a common prototype for this class of PDE.
 				
@@ -70,7 +79,7 @@
 				Under a parabolic PDE, this delta function will become a gaussian with tails extending to infinity at the very next instant, $t>0$.
 				The heat equation is a simple prototype for this class of PDE.
 				
-			Elliptic \acp{PDE} won't be considered in this work, but the definition is easy to guess considering the last two definitions.
+			We will not consider elliptic \acp{PDE} in this work.
 				
 				
 				
@@ -95,12 +104,16 @@
 			
 			We will use both Equation \ref{par} and the parabolic system often in this work, please note that they only mean the same thing if the thermal diffusivity is constant.
 		
-		\subsection{Hyperbolic Heat Conduction}
+		\subsection{Hyperbolic Heat Conduction} \label{hyp_back_sec}
 		
-			Hyperbolic heat conduction equations have been proposed by a number of researchers in astrophysics \citep{snodin_06} and solar physics \citep{A}.
-				As has been discussed earlier, this work is following the procedure detailed in \cite{A}.
-			
-				Their approach adds an extra term to the flux equation that is proportional to the time derivative of heat flux.
+			Hyperbolic heat conduction equations have been proposed by a number of researchers in astrophysics \citep{snodin_06} and solar physics \citepalias{A}.
+				As has been discussed earlier, this work is following the procedure detailed in \citetalias{A}.
+		
+			We will see in Section \ref{disp_par_sec} that the information-travel velocity $v_i$ in the parabolic case is proportional to wavenumber. 
+				This means that $v_i$ is effectively infinite over a continuous domain (which can support infinitely-high wavenumbers), and finite but immense over a discrete domain.
+				We introduce the hyperbolic formulation to impose an artificial limit on $v_i$ to make simulations more computationally manageable at the expense of accurately representing the high frequencies (as compared to the parabolic case).
+				
+			Following \citetalias{A}, we transform the parabolic system to a hyperbolic system by adding an extra term to the flux equation
 				\begin{gather}
 					\tau \frac{\partial q}{\partial t} + q = -\kappa \frac{\partial T}{\partial x} \label{flux}\\
 					\frac{\partial T}{\partial t} = -\frac{\partial q}{\partial x} \label{temp}
@@ -110,9 +123,9 @@
 				
 				If we assume that $\kappa$ and $\tau$ are constants, we can express Equation \ref{flux} as a single second-order equation by taking a spatial derivative and plugging in Equation \ref{temp}.
 				\begin{align}
-					& \frac{\partial}{\partial x} \left( \tau \frac{\partial q}{\partial t} \right) + \frac{\partial q}{\partial x} = - \frac{\partial}{\partial x} \left( \kappa \frac{\partial T}{\partial x} \right) \\
-					\Rightarrow \quad & \tau \frac{\partial}{\partial t} \frac{\partial q}{\partial x} + \frac{\partial q}{\partial x} = -\kappa \frac{\partial^2 T}{\partial x^2} \\
-					\Rightarrow \quad & \tau \frac{\partial^2 T}{\partial t^2} +  \frac{\partial T}{\partial t} - \kappa \frac{\partial^2 T}{\partial x^2} = 0 \label{wave}
+%					& \frac{\partial}{\partial x} \left( \tau \frac{\partial q}{\partial t} \right) + \frac{\partial q}{\partial x} = - \frac{\partial}{\partial x} \left( \kappa \frac{\partial T}{\partial x} \right) \\
+%					\Rightarrow \quad & \tau \frac{\partial}{\partial t} \frac{\partial q}{\partial x} + \frac{\partial q}{\partial x} = -\kappa \frac{\partial^2 T}{\partial x^2} \\
+					& \tau \frac{\partial^2 T}{\partial t^2} +  \frac{\partial T}{\partial t} - \kappa \frac{\partial^2 T}{\partial x^2} = 0 \label{wave}
 				\end{align}
 				The above equation is a linear, damped wave equation in temperature. Notice that $A > 0$, $B = 0$, and $C < 0$, so that $B^2 - A C$ is positive and the equation is hyperbolic.	
 				While the solar atmosphere has a temperature-dependent thermal diffusivity $\kappa$, Equation \ref{wave} will still be useful for examining the linear behavior of the hyperbolic system.
@@ -121,14 +134,14 @@
 				\begin{align}
 					c = \sqrt{\frac{\kappa}{\tau}} \label{vp}
 				\end{align}
-				In \cite{A}, they assume $c$ to be a constant, proportial to the ratio of the grid size to the timestep size,
+				In \citetalias{A}, they assume $c$ to be a constant, proportial to the ratio of the grid size to the timestep size,
 				\begin{align}
 					c = f \frac{\Delta x}{\Delta t} \label{v},
 				\end{align}
 				where $f$ is known as the Courant number and will be discussed in Section \ref{vnsa_sec}.
 				They also use the Spitzer form of thermal conduction \citep{spitzer_62}, 
 				\begin{align}
-					\kappa = T^{5/2}
+					\kappa = \kappa_0 T^{5/2}
 				\end{align}
 				where we are adopting some interesting unit system that makes a scaling constant (which might be named $\kappa_0$) unnecessary.
 				
@@ -143,10 +156,10 @@
 	\section{Linear Dispersion Relations} \label{linear_sec}
 	
 			We can derive a \ac{DR} for each heat conduction case.
-				These will be used to understand the range of allowable values for $\tau$.
+				These will be used to estimate the information propagation velocity.
 				The \ac{DR}s can also be useful for estimating the maximum timestep size required to maintain stability.
 				
-		\subsection{Parabolic}
+		\subsection{Parabolic} \label{disp_par_sec}
 		
 			Deriving a \ac{DR} for the parabolic case is much simpler, so we'll start with that.
 				As in the previous section, $\kappa$ will be taken to be a constant, so we can carry out a linear analysis.
@@ -161,8 +174,17 @@
 				\omega(k) = i \kappa k^2.
 			\end{equation}
 			From the above \ac{DR} we can see that $\omega$ is imaginary. Thus, all wavenumbers decay exponentially, which is the expected behavior from the diffusion operator.
+			
+			A rough estimate for the information propagation velocity is the magniude of the phase velocity,
+			\begin{align}
+				v_i \approx |v_p| = \frac{|\omega(k)|}{k}.
+			\end{align}
+			So as promised in Section \ref{hyp_back_sec}, the information propagation velocity in the parabolic case is proportional to the wavenumber
+			\begin{align}
+				v_i = \kappa k.
+			\end{align}
 					
-		\subsection{Hyperbolic}
+		\subsection{Hyperbolic} \label{disp_hyp_sec}
 		
 			Similarly, for the hyperbolic case, we take the Fourier transform of Equation \ref{wave} and cancel the factors of $\tilde{T}$
 			\begin{equation}
@@ -180,13 +202,13 @@
 			If Inequality \ref{re_ineq} is satisfied, the magnitude of $\omega$ is
 			\begin{align}
 				|\omega(k)| &= \frac{1}{2 \tau} \sqrt{ 1^2 +  \left(\pm \sqrt{4 \kappa \tau k^2 - 1}\right)^2 } \\
-							&= \frac{1}{2 \tau} \sqrt{1 + (4 \kappa \tau k^2 - 1)} \\
-							&= \frac{1}{2 \tau} \sqrt{4 \kappa \tau k^2} \\
-							&= \sqrt{\frac{4 \kappa \tau k^2}{4 \tau^2}} \\
+%							&= \frac{1}{2 \tau} \sqrt{1 + (4 \kappa \tau k^2 - 1)} \\
+%							&= \frac{1}{2 \tau} \sqrt{4 \kappa \tau k^2} \\
+%							&= \sqrt{\frac{4 \kappa \tau k^2}{4 \tau^2}} \\
 							&= \sqrt{\frac{\kappa}{\tau}} k \\
 							&= c k.
 			\end{align}
-			Apparently waves cannot propagate faster than the characteristic speed $c$.
+			Again as promised in Section \ref{hyp_back_sec}, the information propagation velocity is now smaller than some constant $v_i \leq c$.
 			
 			Since we are interested in understanding the small-scale evolution of the hyperbolic system, it is sufficient to consider only the branch where Inequality \ref{re_ineq} is satisfied.
 			This is because Inequality \ref{re_ineq} corresponds to the large wavenumber/small wavelength limit since we expect the grid size $\Delta x$ to be much smaller than the characteristic scale $\sqrt{\kappa \tau}$.
@@ -194,7 +216,7 @@
 			
 
 		
-	\section{Numerical Implementation}
+	\section{Numerical Implementation} \label{num_sec}
 	
 		We would like to incorporate this hyperbolic heat conduction as part of a larger simulations of the solar atmosphere.
 			In the case of the solar atmosphere, $\kappa$ is in general not constant, resulting in non-linear \acp{PDE}.
@@ -217,6 +239,43 @@
 					
 				For both the parabolic and hyperbolic cases, we will express the dependent variables, $q$ and $T$, on a staggered grid.
 					Temperature will be evaluated in the center of a grid cell, while heat flux will be evaluated on the edges of a grid cell.
+					This formulation makes good physical sense, as heat flux is most easily interpreted as the heat transmitted across the boundary between cells, while the body of the cell is said to have a single temperature.
+					
+					\begin{figure}[H]
+						\centering
+						%\vspace{10pt}
+						\begin{tikzpicture}
+						\draw [->] (0,5/4) -- (6.75,5/4);
+						\node at (7,5/4) {$x$};
+						
+						\draw[black](0,0) rectangle(1,1);
+						\draw[black](1,0) rectangle(1,1);
+						\draw[black](2,0) rectangle(1,1);
+						\draw[black](3,0) rectangle(1,1);
+						\draw[black](4,0) rectangle(1,1);
+						\draw[black](5,0) rectangle(1,1);
+						\draw[black](6,0) rectangle(1,1);
+						\draw[black](7,0) rectangle(1,1);
+						
+						\node at (1/2,1/2) {$T_L$};
+						\node at (3/2,1/2) {$T_1$};
+						\node at (5/2,1/2) {$T_2$};
+						\node at (7/2,1/2) {$T_3$};
+						\node at (9/2,1/2) {$T_4$};
+						\node at (11/2,1/2) {$T_5$};
+						\node at (13/2,1/2) {$T_R$};
+						
+						\node at (1,-1/4) {$q_L$};
+						\node at (2,-1/4) {$q_1$};
+						\node at (3,-1/4) {$q_2$};
+						\node at (4,-1/4) {$q_3$};
+						\node at (5,-1/4) {$q_4$};
+						\node at (6,-1/4) {$q_R$};
+						\end{tikzpicture}
+						\caption{Visualization of the staggered grid on which the temperature $T$ and the the heat flux $q$ are evaluated. The subscript $L$ corresponds to the left boundary and $R$ corresponds to the right boundary.}
+						\label{staggered}
+					\end{figure}
+					This grid structure was first introduced by \cite{1965PhFl....8.2182H}, and serves to control the \textit{checkerboard instability}, a situation where the even and odd cells are decoupled from one another and evolve independently \citep{cfd_book}. 
 		
 			\subsubsection{Parabolic}
 			
@@ -225,7 +284,10 @@
 					q_i^{n+1} = - \kappa \frac{T_{i+1}^n - T_i^n}{\Delta x} \label{q_par}\\
 					\frac{T_i^{n+1} - T_i^n}{\Delta t} = - \frac{q_i^n - q_{i-1}^n}{\Delta x} \label{T_par}
 				\end{gather}
-				Solve for $q_i^{n+1}$ and $T_i^{n+1}$ to express the system as an update rule
+				Notice that Equation \ref{q_par} uses a forward spatial difference while \ref{T_par} uses a backwards spatial difference. 
+					This is due to our choice of definition of the staggered grid, $q_i$ is in-between $T_i$ and $T_{i+1}$, while $T_i$ is in-between $q_{i-1}$ and $q_i$.
+					
+				Solve Equations \ref{q_par} and \ref{T_par} for $q_i^{n+1}$ and $T_i^{n+1}$ to express the system as an update rule
 				\begin{align}
 						q_i^{n+1} &= - \kappa \frac{T_{i+1}^n - T_i^n}{\Delta x} \label{q_par_up}\\
 						T_i^{n+1} &= T_i^n - \frac{1}{v} \left( q_i^n - q_{i-1}^n \right), \label{T_par_up}
@@ -258,10 +320,10 @@
 				To remain stable, the timestep must be smaller than all of the relevant timescales, i.e. any disturbance must be well-resolved in time.
 				However, setting the timestep too small is undesirable because simulating more timesteps obviously increases the amount of computation required per unit time.
 				Therefore, we would like to derive an expression for the maximum stable timestep to ensure computational efficiency and to predict the magnitude of the speedup offered by the hyperbolic system.
-				This expression is known as the \ac{CFL} condition (\cite{cfl}) and can be expressed in terms of the parameters of the system of \acp{PDE} and discrete grid using \ac{VNSA}.
+				This expression is known as the \ac{CFL} condition \citep{cfl} and can be expressed in terms of the parameters of the system of \acp{PDE} and discrete grid using \ac{VNSA}.
 		
 			\ac{VNSA} is a method that relies on representing the numerical error of an approximate solution to a system of \acp{PDE} as a Fourier series.
-				Therefore \ac{VNSA} can only applied to linear systems of \acp{PDE}, and for this work we will use the linearized system as discussed in Section \ref{linear_sec} with constant thermal diffusivity and damping timescale. The remainder of this section closely follows the method outline in \cite{cfd_book}, but has been generalized to systems of multiple dependent variables.
+				Therefore \ac{VNSA} can only applied to linear systems of \acp{PDE}, and for this work we will use the linearized system as discussed in Section \ref{linear_sec} with constant thermal diffusivity and damping timescale. The remainder of this section closely follows the method outlined in \cite{cfd_book}, but has been generalized to systems of multiple dependent variables.
 				
 			We start by defining the numerical error as the difference between the true solution and an approximate solution to a system of \acp{PDE}.
 				For both the hyperbolic and parabolic systems, we define the numerical error as
@@ -345,19 +407,19 @@
 				
 				Solving for this eigenvalue gives
 				\begin{align}
-				G = \frac{1}{2} \pm \frac{i}{2} \sqrt{\frac{16 \kappa \Delta t}{\Delta x^2} \gamma^2  - 1}, \label{par_ev}
+				G = \frac{1}{2} \pm \frac{i}{2} \sqrt{\frac{16 \kappa \Delta t}{\Delta x^2} \gamma^2  - 1}, \label{par_ev},
 				\end{align}
 				where
 				\begin{align}
-					\gamma = \sin(k \Delta x / 2)
+					\gamma = \sin(k \Delta x / 2).
 				\end{align}
 				As discussed in Section \ref{linear_sec}, we are generally more interested in oscillatory solutions, since they correspond with the largest wavenumbers.
 				Equation \ref{par_ev} is oscillatory if the imaginary part is non-zero, meaning that the argument of the radical must be greater than zero.
 
 				Multipy the above by its complex conjugate to find the absolute magnitude squared
 				\begin{align}
-					|G|^2 &= \frac{1}{4} + \frac{1}{4} \left( \frac{16 \kappa \Delta t}{\Delta x^2} \gamma^2 - 1 \right) \\
-					      &= \frac{4 \kappa \Delta t}{\Delta x^2} \gamma^2
+%					|G|^2 &= \frac{1}{4} + \frac{1}{4} \left( \frac{16 \kappa \Delta t}{\Delta x^2} \gamma^2 - 1 \right) \\
+					|G|^2 &= \frac{4 \kappa \Delta t}{\Delta x^2} \gamma^2
 				\end{align}
 				Finally, apply the convergence condition and solve for $\Delta t$
 				\begin{align}
@@ -401,60 +463,86 @@
 				\end{align}
 				Again, we consider only the oscillatory solution, and multiply the above by its complex conjugate to find the absolute magnitude squared of the amplification factor.
 				\begin{align}
-					|G|^2 &= \left( 1 - \frac{\Delta t}{2 \tau} \right)^2 + \frac{\Delta t^2}{4 \tau^2} \left( \frac{16 \kappa \tau}{\Delta x^2} \gamma^2 - 1 \right) \\
-						  &= 1 - \frac{\Delta t}{\tau} + \frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2
+%					|G|^2 &= \left( 1 - \frac{\Delta t}{2 \tau} \right)^2 + \frac{\Delta t^2}{4 \tau^2} \left( \frac{16 \kappa \tau}{\Delta x^2} \gamma^2 - 1 \right) \\
+					|G|^2 &= 1 - \frac{\Delta t}{\tau} + \frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2
 				\end{align}
 				Applying the convergence condition gives
 				\begin{align}
-					1 - \frac{\Delta t}{\tau} + \frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2 &< 1 \\
-					\frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2 &< \frac{\Delta t}{\tau} \\
-					\frac{4 \kappa \Delta t}{\Delta x^2} \gamma^2 &< 1 \\
+%					1 - \frac{\Delta t}{\tau} + \frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2 &< 1 \\
+%					\frac{4 \kappa \Delta t^2}{\tau \Delta x^2} \gamma^2 &< \frac{\Delta t}{\tau} \\
+%					\frac{4 \kappa \Delta t}{\Delta x^2} \gamma^2 &< 1 \\
 					\Delta t &< \frac{\Delta x^2}{4 \kappa \sin^2(k \Delta x / 2)}.
 				\end{align}
 				We can see immediately that the above equation is exactly the same as the CFL condition for the parabolic case, Equation \ref{par_cfl_2}.
 				This is very surprising as naively you would expect the CFL condition to depend on the damping timescale.
 				Given this result there is no speedup possible using first-order explicit finite difference for the hyperbolic system.
 			
-	\section{Results}
+	\section{Results} \label{res_sec}
 	
 		We developed a program to simulate heat conduction using the update rules developed in the previous section.
 			This was used to test the validity of our expressions for the CFL condition.
 			We also wanted to quantify the error between the hyperbolic and parabolic solutions.
 			
-		Our setup was identical to that of the heat conduction test in \cite{A}, with 200 grid points over a spatail domain of 1.0, boundary conditions $T(0) = 0.1$, $T(1) = 1.0$, and initial condition
+		Our setup was identical to that of the flare-like heat conduction test in \citetalias{A}, with 200 grid points over a spatial domain of 1.0, boundary conditions $T(0) = 0.1$, $T(1) = 1.0$, and initial condition
 		\begin{align}
 			T(x,0) = 0.1 + 0.9 x^5.
 		\end{align} 
 	
-		We performed two tests, one using constant heat conduction with $\kappa = 1.0$ (Figure \ref{linear_test}), and another with Spitzer heat conduction with $\kappa = T^{5/2}$ (Figure \ref{spitzer_test}).
+		We performed the same test as conducted in \citetalias{A} with the Spitzer heat conduction, where $\kappa = T^{5/2}$.
+			We can see the results of the parabolic test in Figure \ref{spitzer_test}, plotted at the same times as \citetalias{A}.
+
+			
 	
-		\begin{figure}[h!]
-			\centering
-			\includegraphics[width=\columnwidth]{figures/T_linear}
-			\caption{Constant heat conduction test. Different colors denote the solution at uniform timesteps.}
-			\label{linear_test}
-		\end{figure}
+%		We performed two tests, one using constant heat conduction with $\kappa = 1.0$ (Figure \ref{linear_test}), and another with Spitzer heat conduction with $\kappa = T^{5/2}$ (Figure \ref{spitzer_test}).
+	
+%		\begin{figure}[h!]
+%			\centering
+%			\includegraphics[width=\columnwidth]{figures/T_linear}
+%			\caption{Constant heat conduction test. Different colors denote the solution at uniform timesteps.}
+%			\label{linear_test}
+%		\end{figure}
 		
 		\begin{figure}[h!]
 			\centering
 			\includegraphics[width=\columnwidth]{figures/T_spitzer}
-			\caption{Spitzer heat conduction test. Different colors denote the solution at uniform timesteps.}
+			\caption{Spitzer heat conduction test, $\kappa = T^{5/2}$, for times: 0.0 (blue), 0.125 (orange), 0.25 (green), 0.5 (red), and 1 (purple).}
 			\label{spitzer_test}
 		\end{figure}
+		
+		In Figure \ref{error}, we can see the difference between the parabolic and hyperbolic solutions using the same timestep size, $\Delta t = 3.16 \times 10^{-6}$, and the same value for the Courant number, $f=0.25$.
+			From this plot we can see that the magnitude of the error is so small that it would be imperceptible on the scale of Figure \ref{spitzer_test}.
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=\columnwidth]{figures/T_error}
+			\caption{Difference between the parabolic and hyperbolic solutions plotted for the same times and parameters as Figure \ref{spitzer_test}. }
+			\label{error}
+		\end{figure}
+		
+		Also from the large, positive spikes at times 0.125 and 0.25 in Figure \ref{error}, we can see that the conduction front in the parabolic solution is outrunning the hyperbolic solution.
+			This is consistent with our view that we were imposing a speed limit on the high-frequencies.
 		
 		As predicted by the VNSA, there was no speedup possible using first-order EFD for both the constant and Spitzer conductivity.
 		Any attempt to drive the solution faster would result in nyquist-frequency oscillations being amplified in regions of high temperature, which is a clear violation of the CFL condition.
 	
-		However, driving the parabolic and the hyperbolic solutions at the same timestep results in an RMS error of $1.18 \times 10^{-3}$, which is imperceptible at the scales of Figures \ref{linear_test} and \ref{spitzer_test}, indicating that the hyperbolic solution is working correctly.
+		However, driving the parabolic and the hyperbolic solutions at the same timestep results in the small error shown in Figure \ref{error}, indicating that the hyperbolic solution is working correctly.
 	
 	\section{Conclusion}
 	
+		We have reviewed \citetalias{A}'s approach to making simulation of heat conduction more manageable in the solar corona.
+			Dispersion relations were derived to understand how information propagates in both the parabolic and hyperbolic forms of heat conduction.
+			We were able to verify that while the parabolic system had infinite information propagation speed, the hyperbolic system was appropriately clamped to a tunable constant.
+			
+		We then attempted to recreate the results of the heat conduction test detailed in \citetalias{A}, using a first-order \ac{EFD} approximation.
+			An important part of developing the \ac{EFD} approximation was the determination of the maximum allowable timestep size, which we accomplished using \ac{VNSA}.
+			\ac{VNSA} indicated that the hyperbolic formulation would offer no advantage using first-order \ac{EFD}.
+			
+		Nonetheless, we applied our \ac{EFD} method to the same tests as carried out in \citetalias{A} to understand the errors introduced by the hyperbolic formulation, even without computational benefits.
+			
+	
 		It was disappointing that we were unable to achieve any speedup using the hyperbolic system along with first-order EFD. 
-		\cite{A} was able to achieve over 100x speedup using the hyperbolic system, but they must've used a more sophisticated integration technique to prevent instabilities from forming. 
+		\citetalias{A} was able to achieve over 100x speedup using the hyperbolic system, but they must've used a more sophisticated integration technique to prevent instabilities from forming. 
 		We plan to investigate further using Runge-Kutta 2 methods to stabilize the solution.
-		
-		However we found the VNSA to be an effective method for determining the CFL condition for systems of PDEs.
-		This method will be useful in future works for stabilizing explicit solvers.
 			
 	\bibliographystyle{apj}
 	\bibliography{sources}
